@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GraphQlController.Lab.TestTypes
 {
-    public class Root : GraphNodeType<object>
+    public class Person : GraphNodeType<object>
     {
-        public string Name { get; set; } = "Alejandro";
+        public string Name { get; set; }
 
-        public string LastName { get; set; } = "Guardiola";
+        public string LastName { get; set; }
 
         public async override Task OnCreateAsync(object param)
         {

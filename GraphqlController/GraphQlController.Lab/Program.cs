@@ -1,4 +1,5 @@
 ﻿using GraphQL;
+using GraphQL.Resolvers;
 using GraphQL.Types;
 using GraphqlController.GraphQl;
 using GraphqlController.Services;
@@ -24,15 +25,29 @@ namespace GraphQlController.Lab
 
             var pool = provider.GetService<IGraphQlTypePool>();
 
-            var schema = new Schema { Query = new DynamicGraphType(pool, typeof(Root)) };
+            var schema = new Schema { Query = new RootType(pool) };
 
             var json = await schema.ExecuteAsync(_ =>
             {
-                _.Query = "{ name }";
+                _.Query = "{ testPerson{ name, lastName }}";
             });
 
             Console.WriteLine(json);
 
         }
     }
+
+    public class RootType : ObjectGraphType
+    {
+        public RootType(IGraphQlTypePool pool)
+        {
+            AddField(new FieldType()
+            {
+                Name = "testPerson",
+                ResolvedType = new DynamicGraphType(pool, typeof(Person)),
+                Resolver = new FuncFieldResolver<Person>(c => new Person() { Name = "Alejandro", LastName = "Guardiola" })
+            });
+        }
+    }
+
 }
