@@ -5,6 +5,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>C:\Users\thesk\Documents\GitHub\Graphql-Controller\GraphqlController\GraphQlController.Lab\GraphQlController.Lab.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="GraphQL" Version="3.0.0-preview-1352" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.2" />

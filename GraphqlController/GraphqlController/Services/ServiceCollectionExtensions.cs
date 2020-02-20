@@ -14,6 +14,8 @@ namespace GraphqlController.Services
             services.AddScoped<IGraphqlCreator, GraphqlCreator>();
 
             services.AddSingleton<IGraphQlTypePool, GraphQlTypePool>();
+
+            services.AddSingleton<IDocXMLReaderResolver, DocXMLReaderResolver>();
         }
     }
 }

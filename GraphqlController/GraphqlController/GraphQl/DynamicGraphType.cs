@@ -2,6 +2,7 @@
 using GraphQL.Types;
 using GraphqlController.Arguments;
 using GraphqlController.Helpers;
+using LoxSmoke.DocXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,12 @@ namespace GraphqlController.GraphQl
             //}
 
             // get the name
-            var nameArgument = type.GetAttribute<TypeNameAttribute>();
-            var name = nameArgument == null ? type.Name : nameArgument.Name;
-
-            // set type name
-            Name = name;
+            var nameAttr = type.GetAttribute<TypeNameAttribute>();
+            var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
+            
+            // set type name and description
+            Name = nameAttr == null ? type.Name : nameAttr.Name;
+            Description = descAttr == null ? DocXmlHelper.DocReader.GetTypeComments(this.GetType()).Summary : descAttr.Description;
 
             // Generate fields -----------------------------------------------
             // start with the properties
