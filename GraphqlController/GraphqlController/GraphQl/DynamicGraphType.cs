@@ -102,6 +102,8 @@ namespace GraphqlController.GraphQl
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
                     Resolver = resolver
                 };
+
+                AddField(field);
             }
 
         }

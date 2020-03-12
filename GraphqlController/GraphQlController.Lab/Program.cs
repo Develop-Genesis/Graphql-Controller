@@ -29,7 +29,7 @@ namespace GraphQlController.Lab
 
             var json = await schema.ExecuteAsync(_ =>
             {
-                _.Query = "{ name, lastName }";
+                _.Query = "{ name, lastName, motherName }";
             });
 
             Console.WriteLine(json);
