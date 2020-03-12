@@ -20,6 +20,7 @@ namespace GraphqlController.GraphQl
         };
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
+        private Dictionary<Type, IGraphType> InterfaceTypeMap = new Dictionary<Type, IGraphType>();
 
         public IGraphType GetRootGraphType(IGraphNodeType root)
            => new DynamicGraphType(this, root.GetType(), root);
@@ -57,6 +58,18 @@ namespace GraphqlController.GraphQl
             if(type.IsValueType)
             {
                 return new StringGraphType();
+            }
+
+            // Check if it is an interface
+            if(type.IsInterface)
+            {
+                if (!InterfaceTypeMap.TryGetValue(type, out result))
+                {
+                    result = new DynamicInterfaceType(this, type);
+                    InterfaceTypeMap.Add(type, result);
+                }
+
+                return result;
             }
 
             // Check if it is object

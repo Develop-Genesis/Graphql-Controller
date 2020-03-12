@@ -12,9 +12,9 @@ namespace GraphQlController.Lab.TestTypes
     /// </summary>
     public class Person : GraphNodeType
     {
-        public string Name { get; set; }
+        public string Name => "Alejandro";
 
-        public string LastName { get; set; }
+        public string LastName => "Guardiola";
 
         /// <summary>
         /// The name of the mother

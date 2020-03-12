@@ -30,6 +30,15 @@ namespace GraphqlController.GraphQl
             Name = nameAttr?.Name ?? type.Name;
             Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
 
+            // Check for interfaces
+            var interfaces = type.GetNotDerivedInterfaces();
+
+            // Add all the interface that this implement
+            foreach(var intrfce in interfaces)
+            {
+                AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);
+            }
+
             // Generate fields -----------------------------------------------
             // start with the properties
             var properties = type

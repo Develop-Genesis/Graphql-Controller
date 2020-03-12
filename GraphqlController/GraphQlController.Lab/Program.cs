@@ -36,18 +36,5 @@ namespace GraphQlController.Lab
 
         }
     }
-
-    public class RootType : ObjectGraphType
-    {
-        public RootType(IGraphQlTypePool pool)
-        {
-            AddField(new FieldType()
-            {
-                Name = "testPerson",
-                ResolvedType = new DynamicGraphType(pool, typeof(Person)),
-                Resolver = new FuncFieldResolver<Person>(c => new Person() { Name = "Alejandro", LastName = "Guardiola" })
-            });
-        }
-    }
-
+    
 }
