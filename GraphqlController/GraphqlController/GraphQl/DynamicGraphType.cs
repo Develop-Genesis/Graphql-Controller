@@ -15,20 +15,20 @@ namespace GraphqlController.GraphQl
 {
     public class DynamicGraphType : ObjectGraphType
     {
-        public DynamicGraphType(IGraphQlTypePool graphTypePool, Type type)
+        public DynamicGraphType(IGraphQlTypePool graphTypePool, Type type, object instance = null)
         {
-            //if (!typeof(GraphNodeType<>).IsAssignableFrom(type))
-            //{
-            //    throw new ArgumentException("The type is not of type GraphNodeType<>");
-            //}
-
+            if (!typeof(IGraphNodeType).IsAssignableFrom(type))
+            {
+                throw new ArgumentException("The type is not of type GraphNodeType<>");
+            }
+            
             // get the name
             var nameAttr = type.GetAttribute<TypeNameAttribute>();
             var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
-            
+
             // set type name and description
-            Name = nameAttr == null ? type.Name : nameAttr.Name;
-            Description = descAttr == null ? DocXmlHelper.DocReader.GetTypeComments(this.GetType()).Summary : descAttr.Description;
+            Name = nameAttr?.Name ?? type.Name;
+            Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
 
             // Generate fields -----------------------------------------------
             // start with the properties
@@ -49,9 +49,9 @@ namespace GraphqlController.GraphQl
                 var field = new FieldType()
                 {
                     Name = fieldNameAttr == null ? property.Name : fieldNameAttr.Name,
-                    Description = descriptionAttr?.Description,
+                    Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(property).Summary,
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
-                    Resolver = new FuncFieldResolver<object>(c => property.GetValue(c.Source))
+                    Resolver = new FuncFieldResolver<object>(c => property.GetValue(instance ?? c.Source))
                 };
 
                 AddField(field);
@@ -61,6 +61,7 @@ namespace GraphqlController.GraphQl
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                               .Where(x => x.GetAttribute<IgnoreFieldAttribute>() == null);
 
+            // for each method public
             foreach (var method in methods)
             {
                 if(method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
@@ -80,14 +81,14 @@ namespace GraphqlController.GraphQl
                     graphType = graphTypePool.GetGraphType(awaitableReturnType);
                     resolver = new AsyncFieldResolver<object>(c =>
                     {
-                        var task = ExecuteResolverFunction(method, c);
+                        var task = ExecuteResolverFunction(method, c, instance);
                         return task as Task<object>;
                     });
                 }
                 else
                 {
                     graphType = graphTypePool.GetGraphType(method.ReturnType);
-                    resolver = new FuncFieldResolver<object>(c => ExecuteResolverFunction(method, c));
+                    resolver = new FuncFieldResolver<object>(c => ExecuteResolverFunction(method, c, instance));
                 }
 
                 var isNonNull = method.GetAttribute<NonNullFieldAttribute>() != null;
@@ -97,7 +98,7 @@ namespace GraphqlController.GraphQl
                 {
                     Arguments = GetArguments(graphTypePool, method),
                     Name = fieldNameAttr == null ? method.Name : fieldNameAttr.Name,
-                    Description = descriptionAttr?.Description,
+                    Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(method).Summary,
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
                     Resolver = resolver
                 };
@@ -121,7 +122,8 @@ namespace GraphqlController.GraphQl
                 var isNonNullType = param.GetAttribute<NonNullArgumentAttribute>() != null;
 
                 var name = argumentNameAttr == null ? param.Name : argumentNameAttr.Name;
-                var description = argumentDescriptionAttr == null ? "" : argumentDescriptionAttr.Description;
+                var description = argumentDescriptionAttr?.Description ?? 
+                    DocXmlHelper.DocReader.GetMethodComments(methodInfo)?.Parameters.First(x => x.Name == param.Name).Text;
 
                 var graphInputType = isNonNullType
                                             ? new NonNullGraphType(graphTypePool.GetInputType(param.ParameterType))
@@ -140,7 +142,7 @@ namespace GraphqlController.GraphQl
             return new QueryArguments(result);
         }
 
-        public static object ExecuteResolverFunction(MethodInfo method, ResolveFieldContext c)
+        public static object ExecuteResolverFunction(MethodInfo method, ResolveFieldContext c, object intance)
         {
             var parameters = method.GetParameters();
             var parameterValues = new List<object>();
@@ -173,7 +175,7 @@ namespace GraphqlController.GraphQl
                 }
             }
 
-            var resultValue = method.Invoke(c.Source, parameterValues.ToArray());
+            var resultValue = method.Invoke(intance ?? c.Source, parameterValues.ToArray());
 
             return resultValue;
         }

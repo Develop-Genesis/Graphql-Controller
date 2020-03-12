@@ -25,11 +25,11 @@ namespace GraphQlController.Lab
 
             var pool = provider.GetService<IGraphQlTypePool>();
 
-            var schema = new Schema { Query = new RootType(pool) };
+            var schema = new Schema { Query = pool.GetRootGraphType( new Person() ) as IObjectGraphType };
 
             var json = await schema.ExecuteAsync(_ =>
             {
-                _.Query = "{ testPerson{ name, lastName }}";
+                _.Query = "{ name, lastName }";
             });
 
             Console.WriteLine(json);

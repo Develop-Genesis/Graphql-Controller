@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GraphQlController.Lab</name>
+    </assembly>
+    <members>
+        <member name="T:GraphQlController.Lab.TestTypes.Mutations">
+            <summary>
+            Mutations type
+            </summary>
+        </member>
+        <member name="T:GraphQlController.Lab.TestTypes.Person">
+            <summary>
+            Represents a person
+            </summary>
+        </member>
+        <member name="M:GraphQlController.Lab.TestTypes.Person.MotherName(System.String)">
+            <summary>
+            The name of the mother
+            </summary>
+            <param name="jojoto">Just for testing</param>        
+        </member>
+    </members>
+</doc>

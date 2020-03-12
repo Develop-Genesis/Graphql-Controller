@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using GraphqlController.Services;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -19,6 +20,10 @@ namespace GraphqlController.GraphQl
         };
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
+
+        public IGraphType GetRootGraphType(IGraphNodeType root)
+           => new DynamicGraphType(this, root.GetType(), root);
+        
 
         public IGraphType GetGraphType(Type type)
         {
