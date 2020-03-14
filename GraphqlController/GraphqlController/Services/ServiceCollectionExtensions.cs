@@ -22,15 +22,28 @@ namespace GraphqlController.Services
             // add the graphql types pools
             services.AddSingleton<IGraphQlTypePool, GraphQlTypePool>();
 
+            // Register the types
+            services.RegisterAllTypes(assemblies);
+            
+        }
+
+        /// <summary>
+        /// Register all types
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="assemblies"></param>
+        private static void RegisterAllTypes(this IServiceCollection services, params Assembly[] assemblies)
+        {
             // Add all type nodes to the container as transient
-            foreach(var assembly in assemblies)
+            foreach (var assembly in assemblies)
             {
                 var nodeTypes = assembly.GetTypes().Where(x => typeof(IGraphNodeType).IsAssignableFrom(x));
-                foreach(var type in nodeTypes)
+                foreach (var type in nodeTypes)
                 {
                     services.AddTransient(type);
                 }
             }
-        }
+        }        
+
     }
 }

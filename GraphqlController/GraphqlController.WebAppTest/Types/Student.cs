@@ -8,7 +8,7 @@ namespace GraphqlController.WebAppTest.Types
     /// <summary>
     /// An student of the school
     /// </summary>
-    public class Student : GraphNodeType, IPerson
+    public class Student : IPerson
     {
         /// <summary>
         /// Name of the student

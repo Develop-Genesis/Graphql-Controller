@@ -17,9 +17,9 @@ namespace GraphqlController.GraphQl
     {
         public DynamicGraphType(IGraphQlTypePool graphTypePool, Type type, object instance = null)
         {
-            if (!typeof(IGraphNodeType).IsAssignableFrom(type))
+            if (!type.IsClass || type.IsInterface)
             {
-                throw new ArgumentException("The type is not of type GraphNodeType<>");
+                throw new ArgumentException("Invalid object type");
             }
             
             // get the name
@@ -39,7 +39,7 @@ namespace GraphqlController.GraphQl
                 AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);                
             }
 
-            // Implementing is type of in the case this type implement an interface
+            // Implementing isTypeOf in the case this type implement an interface
             IsTypeOf = obj => obj.GetType() == type;
 
             // Generate fields -----------------------------------------------
@@ -171,22 +171,18 @@ namespace GraphqlController.GraphQl
 
                 var nameAttr = param.GetAttribute<ArgumentNameAttribute>();
 
-                object value;
-                if (c.Arguments.TryGetValue(nameAttr == null ? param.Name : nameAttr.Name, out value))
+                object defaultValue;
+                if (param.HasDefaultValue)
                 {
-                    parameterValues.Add(value);
+                    defaultValue = param.DefaultValue;
                 }
                 else
                 {
-                    if (param.HasDefaultValue)
-                    {
-                        parameterValues.Add(param.DefaultValue);
-                    }
-                    else
-                    {
-                        parameterValues.Add(GetDefault(param.ParameterType));
-                    }
+                    defaultValue = GetDefault(param.ParameterType);
                 }
+
+                var value = c.GetArgument(param.ParameterType, nameAttr == null ? param.Name : nameAttr.Name);
+                parameterValues.Add(value);
             }
 
             var resultValue = method.Invoke(intance ?? c.Source, parameterValues.ToArray());

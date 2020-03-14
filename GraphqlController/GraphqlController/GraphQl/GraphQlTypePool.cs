@@ -18,9 +18,12 @@ namespace GraphqlController.GraphQl
             {  typeof(double), new FloatGraphType() },
             {  typeof(bool), new BooleanGraphType() },
         };
+
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> InterfaceTypeMap = new Dictionary<Type, IGraphType>();
+
+        private Dictionary<Type, IGraphType> InputObjectTypeMap = new Dictionary<Type, IGraphType>();
 
         public IGraphType GetRootGraphType(IGraphNodeType root)
            => new DynamicGraphType(this, root.GetType(), root);
@@ -73,7 +76,7 @@ namespace GraphqlController.GraphQl
             }
 
             // Check if it is object
-            if(typeof(IGraphNodeType).IsAssignableFrom(type))
+            if(type.IsClass)
             {
                 if (!ObjectTypeMap.TryGetValue(type, out result))
                 {
@@ -87,8 +90,49 @@ namespace GraphqlController.GraphQl
 
         public IGraphType GetInputType(Type type)
         {
-            // throw new NotImplementedException();
-            return GetGraphType(type);
+            // Check if the type is an scalar type
+            IGraphType result = null;
+
+            // Check if it is an scalar type
+            if (ScalarTypeMap.TryGetValue(type, out result))
+                return result;
+
+            // Check if it is a list
+            if (typeof(IEnumerable).IsAssignableFrom(type))
+            {
+                var enumItemType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)).GetGenericArguments()[0];
+                return new ListGraphType(GetInputType(enumItemType));
+            }
+
+            // Check if it is a enum
+            if (type.IsEnum)
+            {
+                if (!EnumTypeMap.TryGetValue(type, out result))
+                {
+                    result = new DynamicEnumerationGraphType(type);
+                    EnumTypeMap.Add(type, result);
+                }
+                return result;
+            }
+
+            // if it is value type and not included in the scalars like Guid
+            // use it as string
+            if (type.IsValueType)
+            {
+                return new StringGraphType();
+            }
+
+            // Check if it is object
+            if (type.IsClass)
+            {
+                if (!InputObjectTypeMap.TryGetValue(type, out result))
+                {
+                    result = new DynamicInputGraphObject(this, type);
+                    InputObjectTypeMap.Add(type, result);
+                }
+            }
+
+            return result;
         }        
     }
 }

@@ -8,7 +8,7 @@ namespace GraphqlController.WebAppTest.Types
     /// <summary>
     /// Represents a teacher
     /// </summary>
-    public class Teacher : GraphNodeType, IPerson
+    public class Teacher : IPerson
     {
         /// <summary>
         /// Name of the teacher
