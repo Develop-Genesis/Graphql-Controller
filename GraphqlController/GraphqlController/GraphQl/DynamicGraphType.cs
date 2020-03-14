@@ -36,8 +36,11 @@ namespace GraphqlController.GraphQl
             // Add all the interface that this implement
             foreach(var intrfce in interfaces)
             {
-                AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);
+                AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);                
             }
+
+            // Implementing is type of in the case this type implement an interface
+            IsTypeOf = obj => obj.GetType() == type;
 
             // Generate fields -----------------------------------------------
             // start with the properties

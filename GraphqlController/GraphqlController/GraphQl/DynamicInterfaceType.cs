@@ -17,6 +17,14 @@ namespace GraphqlController.GraphQl
                 throw new InvalidOperationException("The type has to be an interface");
             }
 
+            // get the name
+            var nameAttr = type.GetAttribute<TypeNameAttribute>();
+            var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
+
+            // set type name and description
+            Name = nameAttr?.Name ?? type.Name;
+            Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
+
             var properties = type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.GetProperty);
 
             foreach(var property in properties)

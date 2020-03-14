@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GraphqlController.WebAppTest</name>
+    </assembly>
+    <members>
+        <member name="T:GraphqlController.WebAppTest.Types.IPerson">
+            <summary>
+            A person in the school
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.IPerson.Name">
+            <summary>
+            Name of the person
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.IPerson.LastName">
+            <summary>
+            Last Name of the person
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Root.Teachers">
+            <summary>
+            The teachers in the school
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Root.AllPeople">
+            <summary>
+            All people in the school
+            </summary>
+        </member>
+        <member name="T:GraphqlController.WebAppTest.Types.Student">
+            <summary>
+            An student of the school
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Student.Name">
+            <summary>
+            Name of the student
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Student.LastName">
+            <summary>
+            Last name of the student
+            </summary>
+        </member>
+        <member name="T:GraphqlController.WebAppTest.Types.Teacher">
+            <summary>
+            Represents a teacher
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Teacher.Name">
+            <summary>
+            Name of the teacher
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Teacher.LastName">
+            <summary>
+            Last Name of the Teacher
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Teacher.Students">
+            <summary>
+            Students that this teacher has
+            </summary>
+        </member>
+    </members>
+</doc>

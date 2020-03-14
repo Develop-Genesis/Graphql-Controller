@@ -37,7 +37,7 @@ namespace GraphqlController.GraphQl
             // Check if it is a list
             if(typeof(IEnumerable).IsAssignableFrom(type))
             {
-                var enumItemType = type.GetInterfaces().First(x => x.GetGenericTypeDefinition() == typeof(IEnumerable<>)).GetGenericArguments()[0];
+                var enumItemType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)).GetGenericArguments()[0];
                 return new ListGraphType(GetGraphType(enumItemType));
             }
 

@@ -20,5 +20,15 @@
             </summary>
             <param name="jojoto">Just for testing</param>        
         </member>
+        <member name="T:GraphQlController.Lab.TestTypes.TestInterface">
+            <summary>
+            Interface for testing
+            </summary>
+        </member>
+        <member name="P:GraphQlController.Lab.TestTypes.TestInterface.Name">
+            <summary>
+            Name of the entity
+            </summary>
+        </member>
     </members>
 </doc>
