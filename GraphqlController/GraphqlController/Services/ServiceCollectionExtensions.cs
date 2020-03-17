@@ -1,4 +1,5 @@
-﻿using GraphqlController.GraphQl;
+﻿using GraphQL.Types;
+using GraphqlController.GraphQl;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,13 @@ namespace GraphqlController.Services
             services.AddScoped<IGraphqlCreator, GraphqlCreator>();
             // add the graphql types pools
             services.AddSingleton<IGraphQlTypePool, GraphQlTypePool>();
-
+            // add the assembly resolver
+            services.AddSingleton<IAssemblyResolver>(new AssemblyResolver(assemblies));
             // Register the types
             services.RegisterAllTypes(assemblies);
+
+            // register the schema
+            services.AddSingleton<ISchema>( new Schema() { } )
             
         }
 

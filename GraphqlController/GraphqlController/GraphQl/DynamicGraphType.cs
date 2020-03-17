@@ -15,7 +15,7 @@ namespace GraphqlController.GraphQl
 {
     public class DynamicGraphType : ObjectGraphType
     {
-        public DynamicGraphType(IGraphQlTypePool graphTypePool, Type type, object instance = null)
+        public DynamicGraphType(IGraphQlTypePool graphTypePool, Type type, bool isRoot = false)
         {
             if (!type.IsClass || type.IsInterface)
             {
@@ -63,7 +63,7 @@ namespace GraphqlController.GraphQl
                     Name = fieldNameAttr == null ? property.Name : fieldNameAttr.Name,
                     Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(property).Summary,
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
-                    Resolver = new FuncFieldResolver<object>(c => property.GetValue(instance ?? c.Source))
+                    Resolver = new FuncFieldResolver<object>(c => property.GetValue( GetSourceInstance(c, type, isRoot) ))
                 };
 
                 AddField(field);
@@ -93,14 +93,14 @@ namespace GraphqlController.GraphQl
                     graphType = graphTypePool.GetGraphType(awaitableReturnType);
                     resolver = new AsyncFieldResolver<object>(c =>
                     {
-                        var task = ExecuteResolverFunction(method, c, instance);
+                        var task = ExecuteResolverFunction(method, c, type, isRoot);
                         return task as Task<object>;
                     });
                 }
                 else
                 {
                     graphType = graphTypePool.GetGraphType(method.ReturnType);
-                    resolver = new FuncFieldResolver<object>(c => ExecuteResolverFunction(method, c, instance));
+                    resolver = new FuncFieldResolver<object>(c => ExecuteResolverFunction(method, c, type, isRoot));
                 }
 
                 var isNonNull = method.GetAttribute<NonNullFieldAttribute>() != null;
@@ -120,7 +120,12 @@ namespace GraphqlController.GraphQl
 
         }
 
-        public static QueryArguments GetArguments(IGraphQlTypePool graphTypePool, MethodInfo methodInfo)
+        private static object GetSourceInstance(ResolveFieldContext c, Type type, bool isRoot) =>
+            isRoot
+            ? (c.UserContext["serviceProvider"] as IServiceProvider).GetService(type)
+            : c.Source;
+
+        private static QueryArguments GetArguments(IGraphQlTypePool graphTypePool, MethodInfo methodInfo)
         {
             var result = new List<QueryArgument>();
             var parameters = methodInfo.GetParameters();
@@ -156,7 +161,7 @@ namespace GraphqlController.GraphQl
             return new QueryArguments(result);
         }
 
-        public static object ExecuteResolverFunction(MethodInfo method, ResolveFieldContext c, object intance)
+        private static object ExecuteResolverFunction(MethodInfo method, ResolveFieldContext c, Type type, bool isRoot)
         {
             var parameters = method.GetParameters();
             var parameterValues = new List<object>();
@@ -185,13 +190,13 @@ namespace GraphqlController.GraphQl
                 parameterValues.Add(value);
             }
 
-            var resultValue = method.Invoke(intance ?? c.Source, parameterValues.ToArray());
+            var resultValue = method.Invoke(GetSourceInstance(c, type, isRoot), parameterValues.ToArray());
 
             return resultValue;
         }
 
         // Get deafult value of type
-        public static object GetDefault(Type type)
+        private static object GetDefault(Type type)
         {
             if (type.IsValueType)
             {

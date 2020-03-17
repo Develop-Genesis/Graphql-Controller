@@ -9,6 +9,6 @@ namespace GraphqlController.GraphQl
     {
         IGraphType GetGraphType(Type type);
         IGraphType GetInputType(Type type);
-        IGraphType GetRootGraphType(IGraphNodeType root);
+        IGraphType GetRootGraphType(Type rootType);        
     }
 }

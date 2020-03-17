@@ -19,15 +19,21 @@ namespace GraphqlController.GraphQl
             {  typeof(bool), new BooleanGraphType() },
         };
 
+        IAssemblyResolver _assemblyResolver;
+
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> InterfaceTypeMap = new Dictionary<Type, IGraphType>();
 
         private Dictionary<Type, IGraphType> InputObjectTypeMap = new Dictionary<Type, IGraphType>();
 
-        public IGraphType GetRootGraphType(IGraphNodeType root)
-           => new DynamicGraphType(this, root.GetType(), root);
-        
+        public IGraphType GetRootGraphType(Type rootType)
+           => new DynamicGraphType(this, rootType, true);
+
+        public GraphQlTypePool(IAssemblyResolver assemblyResolver)
+        {
+            _assemblyResolver = assemblyResolver;
+        }
 
         public IGraphType GetGraphType(Type type)
         {
@@ -70,6 +76,7 @@ namespace GraphqlController.GraphQl
                 {
                     result = new DynamicInterfaceType(this, type);
                     InterfaceTypeMap.Add(type, result);
+                    RegisterInterfaceTypes(type);
                 }
 
                 return result;
@@ -133,6 +140,20 @@ namespace GraphqlController.GraphQl
             }
 
             return result;
-        }        
+        }      
+        
+        private void RegisterInterfaceTypes(Type intrfce)
+        {
+            // Get all the types that implement the interface
+            var types = _assemblyResolver.GetAssemblies().SelectMany(assembly => assembly.GetTypes()
+                                                                .Where(type => intrfce.IsAssignableFrom(type)));
+
+            // Add all the types that implement the interface to the pool
+            foreach(var type in types)
+            {
+                GetGraphType(type);
+            }
+        }
+
     }
 }

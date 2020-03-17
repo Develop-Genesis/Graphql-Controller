@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.WebAppTest.Types
 {
+    /// <summary>
+    /// The root type
+    /// </summary>
     public class Root : GraphNodeType
     {
         /// <summary>
