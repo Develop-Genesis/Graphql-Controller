@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphqlController", "Graphq
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphQlController.Lab", "GraphQlController.Lab\GraphQlController.Lab.csproj", "{EB99B937-1B7B-4D56-BC4E-9278249E6E21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GraphqlController.WebAppTest", "GraphqlController.WebAppTest\GraphqlController.WebAppTest.csproj", "{87772282-23F0-4DD8-AFE6-77D6B93DBCC2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GraphqlController.WebAppTest", "GraphqlController.WebAppTest\GraphqlController.WebAppTest.csproj", "{87772282-23F0-4DD8-AFE6-77D6B93DBCC2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{759413C2-5AC4-4A14-9E66-FAD03D4BD4D0}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

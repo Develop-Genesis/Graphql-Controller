@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GraphqlController.Arguments
+namespace GraphqlController.Attributes
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Field)]
     public class FieldDescriptionAttribute : Attribute

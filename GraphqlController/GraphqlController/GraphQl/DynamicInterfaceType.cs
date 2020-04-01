@@ -1,5 +1,5 @@
 ﻿using GraphQL.Types;
-using GraphqlController.Arguments;
+using GraphqlController.Attributes;
 using GraphqlController.Helpers;
 using System;
 using System.Collections.Generic;

@@ -87,8 +87,14 @@ namespace GraphqlController.GraphQl
             {
                 if (!ObjectTypeMap.TryGetValue(type, out result))
                 {
-                    result = new DynamicGraphType(this, type);
-                    ObjectTypeMap.Add(type, result);
+                    var possibleResult = new DynamicGraphType(this, type);
+
+                    // Check again in case it has been added recursevely
+                    if (!ObjectTypeMap.TryGetValue(type, out result))
+                    {
+                        result = possibleResult;
+                        ObjectTypeMap.Add(type, result);
+                    }                        
                 }
             }
             

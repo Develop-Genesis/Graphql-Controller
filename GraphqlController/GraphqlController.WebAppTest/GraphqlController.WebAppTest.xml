@@ -19,6 +19,11 @@
             Last Name of the person
             </summary>
         </member>
+        <member name="T:GraphqlController.WebAppTest.Types.Root">
+            <summary>
+            The root type
+            </summary>
+        </member>
         <member name="P:GraphqlController.WebAppTest.Types.Root.Teachers">
             <summary>
             The teachers in the school

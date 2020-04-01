@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using GraphqlController.Services;
 using GraphiQl;
+using GraphqlController.WebAppTest.Repositories;
 
 namespace GraphqlController.WebAppTest
 {
@@ -30,6 +31,8 @@ namespace GraphqlController.WebAppTest
             services.AddControllers();
 
             services.AddGraphQlController();
+
+            services.AddScoped<TeacherRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

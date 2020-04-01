@@ -1,6 +1,6 @@
 ﻿using GraphQL.Resolvers;
 using GraphQL.Types;
-using GraphqlController.Arguments;
+using GraphqlController.Attributes;
 using GraphqlController.Helpers;
 using LoxSmoke.DocXml;
 using System;
@@ -21,7 +21,7 @@ namespace GraphqlController.GraphQl
             {
                 throw new ArgumentException("Invalid object type");
             }
-            
+
             // get the name
             var nameAttr = type.GetAttribute<TypeNameAttribute>();
             var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
@@ -34,9 +34,9 @@ namespace GraphqlController.GraphQl
             var interfaces = type.GetNotDerivedInterfaces();
 
             // Add all the interface that this implement
-            foreach(var intrfce in interfaces)
+            foreach (var intrfce in interfaces)
             {
-                AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);                
+                AddResolvedInterface(graphTypePool.GetGraphType(intrfce) as IInterfaceGraphType);
             }
 
             // Implementing isTypeOf in the case this type implement an interface
@@ -63,8 +63,11 @@ namespace GraphqlController.GraphQl
                     Name = fieldNameAttr == null ? property.Name : fieldNameAttr.Name,
                     Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(property).Summary,
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
-                    Resolver = new FuncFieldResolver<object>(c => property.GetValue( GetSourceInstance(c, type, isRoot) ))
+                    Resolver = new FuncFieldResolver<object>(c => property.GetValue(GetSourceInstance(c, type, isRoot))),                    
                 };
+
+                // add the .net type of this field in the metadata
+                field.Metadata["type"] = property;
 
                 AddField(field);
             }
@@ -76,7 +79,7 @@ namespace GraphqlController.GraphQl
             // for each method public
             foreach (var method in methods)
             {
-                if(method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
+                if (method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
                    method.IsSpecialName)
                 {
                     continue;
@@ -115,9 +118,11 @@ namespace GraphqlController.GraphQl
                     Resolver = resolver
                 };
 
+                // add the .net type of this field in the metadata
+                field.Metadata["type"] = method;
+
                 AddField(field);
             }
-
         }
 
         private static object GetSourceInstance(ResolveFieldContext c, Type type, bool isRoot) =>

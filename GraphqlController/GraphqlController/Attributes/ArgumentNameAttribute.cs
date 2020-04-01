@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GraphqlController.Arguments
+namespace GraphqlController.Attributes
 {
     [AttributeUsage(AttributeTargets.Parameter)]
     public class ArgumentNameAttribute : Attribute

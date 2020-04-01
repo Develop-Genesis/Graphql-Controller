@@ -11,7 +11,11 @@ namespace GraphqlController.Services
 
     public interface IScopedServiceProviderResolver : IServiceProviderResolver
     {
-
+        /// <summary>
+        /// Get the service provider for scoped services
+        /// </summary>
+        /// <returns></returns>
+        public IServiceProvider GetProvider();
     }
 
     public class ScopedServiceProvider : IScopedServiceProviderResolver

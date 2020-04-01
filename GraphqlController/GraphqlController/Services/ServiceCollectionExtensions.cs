@@ -28,7 +28,7 @@ namespace GraphqlController.Services
             services.RegisterAllTypes(assemblies);
 
             // register the schema
-            services.AddSingleton<ISchema>( new Schema() { } )
+            services.AddSingleton<ISchema, DynamicSchema>();
             
         }
 
