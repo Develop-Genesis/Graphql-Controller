@@ -55,7 +55,7 @@ namespace GraphqlController.GraphQl
                 var graphType = graphTypePool.GetGraphType(property.PropertyType);
                 var descriptionAttr = property.GetAttribute<FieldDescriptionAttribute>();
                 var fieldNameAttr = property.GetAttribute<FieldNameAttribute>();
-                var isNonNull = property.GetAttribute<NonNullFieldAttribute>() != null;
+                var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
 
                 // create field
                 var field = new FieldType()
@@ -106,7 +106,7 @@ namespace GraphqlController.GraphQl
                     resolver = new FuncFieldResolver<object>(c => ExecuteResolverFunction(method, c, type, isRoot));
                 }
 
-                var isNonNull = method.GetAttribute<NonNullFieldAttribute>() != null;
+                var isNonNull = method.GetAttribute<NonNullAttribute>() != null;
 
                 // create field
                 var field = new FieldType()
@@ -143,7 +143,7 @@ namespace GraphqlController.GraphQl
 
                 var argumentNameAttr = param.GetAttribute<ArgumentNameAttribute>();
                 var argumentDescriptionAttr = param.GetAttribute<ArgumentDescriptionAttribute>();
-                var isNonNullType = param.GetAttribute<NonNullArgumentAttribute>() != null;
+                var isNonNullType = param.GetAttribute<NonNullAttribute>() != null;
 
                 var name = argumentNameAttr == null ? param.Name : argumentNameAttr.Name;
                 var description = argumentDescriptionAttr?.Description ?? 

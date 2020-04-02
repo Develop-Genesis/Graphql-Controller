@@ -34,7 +34,7 @@ namespace GraphqlController.GraphQl
                 var graphType = graphTypePool.GetInputType(property.PropertyType);
                 var descriptionAttr = property.GetAttribute<FieldDescriptionAttribute>();
                 var fieldNameAttr = property.GetAttribute<FieldNameAttribute>();
-                var isNonNull = property.GetAttribute<NonNullFieldAttribute>() != null;
+                var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
 
                 // create field
                 var field = new FieldType()

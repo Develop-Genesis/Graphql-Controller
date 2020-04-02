@@ -46,7 +46,7 @@ namespace GraphqlController.WebAppTest.Types
         /// <param name="param1">Parameter 1</param>
         /// <param name="param2">Parameter 2</param>
         /// <returns></returns>
-        public IPerson TestInput([NonNullArgument]TestInputType param1, string param2)
+        public IPerson TestInput([NonNull]TestInputType param1, string param2)
         {
             return new Teacher() { Name = param1.Hola, LastName = param1.HolaHi };
         } 
@@ -58,7 +58,10 @@ namespace GraphqlController.WebAppTest.Types
     /// </summary>
     public class TestInputType
     {
+        [NonNull]
         public string Hola { get; set; }
+
+        [NonNull]
         public string HolaHi { get; set; }
     }
 }
