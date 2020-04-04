@@ -49,7 +49,9 @@ namespace GraphqlController.WebAppTest.Types
         public IPerson TestInput([NonNull]TestInputType param1, string param2)
         {
             return new Teacher() { Name = param1.Hola, LastName = param1.HolaHi };
-        } 
+        }
+
+        public UnionT UnionTest => new UnionT(new TypeA() { A = "Hola" });
 
     }
 

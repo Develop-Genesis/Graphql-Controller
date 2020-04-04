@@ -4,11 +4,11 @@ using System.Text;
 
 namespace GraphqlController.Attributes
 {
-    [AttributeUsage(AttributeTargets.Class)]
-    public class TypeDescriptionAttribute : Attribute
+    [AttributeUsage(AttributeTargets.Parameter)]
+    public class DescriptionAttribute : Attribute
     {
         public string Description { get; set; }
-        public TypeDescriptionAttribute(string description)
+        public DescriptionAttribute(string description)
         {
             Description = description;
         }

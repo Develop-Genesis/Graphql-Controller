@@ -23,6 +23,7 @@ namespace GraphqlController.GraphQl
 
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
+        private Dictionary<Type, IGraphType> UnionTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> InterfaceTypeMap = new Dictionary<Type, IGraphType>();
 
         private Dictionary<Type, IGraphType> InputObjectTypeMap = new Dictionary<Type, IGraphType>();
@@ -77,6 +78,24 @@ namespace GraphqlController.GraphQl
                     result = new DynamicInterfaceType(this, type);
                     InterfaceTypeMap.Add(type, result);
                     RegisterInterfaceTypes(type);
+                }
+
+                return result;
+            }
+
+            // Check if type is a union
+            if(typeof(IUnionGraphType).IsAssignableFrom(type))
+            {
+                if (!UnionTypeMap.TryGetValue(type, out result))
+                {
+                    var possibleResult = new DynamicUnionGraphType(this, type);
+
+                    // Check again in case it has been added recursevely
+                    if (!UnionTypeMap.TryGetValue(type, out result))
+                    {
+                        result = possibleResult;
+                        UnionTypeMap.Add(type, result);
+                    }
                 }
 
                 return result;

@@ -18,8 +18,8 @@ namespace GraphqlController.GraphQl
             }
 
             // get the name
-            var nameAttr = type.GetAttribute<TypeNameAttribute>();
-            var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
+            var nameAttr = type.GetAttribute<NameAttribute>();
+            var descAttr = type.GetAttribute<DescriptionAttribute>();
 
             // set type name and description
             Name = nameAttr?.Name ?? type.Name;
@@ -30,8 +30,8 @@ namespace GraphqlController.GraphQl
             foreach(var property in properties)
             {
                 var graphType = graphTypePool.GetGraphType(property.PropertyType);
-                var descriptionAttr = property.GetAttribute<FieldDescriptionAttribute>();
-                var fieldNameAttr = property.GetAttribute<FieldNameAttribute>();
+                var descriptionAttr = property.GetAttribute<DescriptionAttribute>();
+                var fieldNameAttr = property.GetAttribute<NameAttribute>();
                 var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
 
                 var field = new FieldType()

@@ -14,8 +14,8 @@ namespace GraphqlController.GraphQl
         public DynamicInputGraphObject(IGraphQlTypePool graphTypePool, Type type)
         {
             // get the name
-            var nameAttr = type.GetAttribute<TypeNameAttribute>();
-            var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
+            var nameAttr = type.GetAttribute<NameAttribute>();
+            var descAttr = type.GetAttribute<DescriptionAttribute>();
 
             // set type name and description
             Name = nameAttr?.Name ?? type.Name;
@@ -27,13 +27,13 @@ namespace GraphqlController.GraphQl
                 // Get all properties with getters
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.GetProperty)
                 // ignore the ones that have the ignore attribute
-                .Where(x => x.GetAttribute<IgnoreFieldAttribute>() == null);
+                .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 
             foreach (var property in properties)
             {
                 var graphType = graphTypePool.GetInputType(property.PropertyType);
-                var descriptionAttr = property.GetAttribute<FieldDescriptionAttribute>();
-                var fieldNameAttr = property.GetAttribute<FieldNameAttribute>();
+                var descriptionAttr = property.GetAttribute<DescriptionAttribute>();
+                var fieldNameAttr = property.GetAttribute<NameAttribute>();
                 var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
 
                 // create field

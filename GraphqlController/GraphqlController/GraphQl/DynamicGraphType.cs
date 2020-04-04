@@ -23,12 +23,24 @@ namespace GraphqlController.GraphQl
             }
 
             // get the name
-            var nameAttr = type.GetAttribute<TypeNameAttribute>();
-            var descAttr = type.GetAttribute<TypeDescriptionAttribute>();
+            var nameAttr = type.GetAttribute<NameAttribute>();
+            var descAttr = type.GetAttribute<DescriptionAttribute>();
 
             // set type name and description
             Name = nameAttr?.Name ?? type.Name;
             Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
+
+            // set the type metadata
+            Metadata["type"] = type;
+
+            {
+                // sets the custom metadatas
+                var metadatas = Attribute.GetCustomAttributes(type, typeof(MetadataAttribute));
+                foreach (MetadataAttribute metadata in metadatas)
+                {
+                    Metadata[metadata.Key] = metadata.Value;
+                }
+            }
 
             // Check for interfaces
             var interfaces = type.GetNotDerivedInterfaces();
@@ -48,13 +60,13 @@ namespace GraphqlController.GraphQl
                 // Get all properties with getters
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.SetProperty | BindingFlags.GetProperty)
                 // ignore the ones that have the ignore attribute
-                .Where(x => x.GetAttribute<IgnoreFieldAttribute>() == null);
+                .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 
             foreach (var property in properties)
             {
                 var graphType = graphTypePool.GetGraphType(property.PropertyType);
-                var descriptionAttr = property.GetAttribute<FieldDescriptionAttribute>();
-                var fieldNameAttr = property.GetAttribute<FieldNameAttribute>();
+                var descriptionAttr = property.GetAttribute<DescriptionAttribute>();
+                var fieldNameAttr = property.GetAttribute<NameAttribute>();
                 var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
 
                 // create field
@@ -63,18 +75,24 @@ namespace GraphqlController.GraphQl
                     Name = fieldNameAttr == null ? property.Name : fieldNameAttr.Name,
                     Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(property).Summary,
                     ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
-                    Resolver = new FuncFieldResolver<object>(c => property.GetValue(GetSourceInstance(c, type, isRoot))),                    
+                    Resolver = new FuncFieldResolver<object>(c => GetFinalValue(property.GetValue(GetSourceInstance(c, type, isRoot)))),                    
                 };
 
                 // add the .net type of this field in the metadata
                 field.Metadata["type"] = property;
+
+                var metadatas = Attribute.GetCustomAttributes(type, typeof(MetadataAttribute));
+                foreach (MetadataAttribute metadata in metadatas)
+                {
+                    Metadata[metadata.Key] = metadata.Value;
+                }
 
                 AddField(field);
             }
 
             // work with the methods
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-                              .Where(x => x.GetAttribute<IgnoreFieldAttribute>() == null);
+                              .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 
             // for each method public
             foreach (var method in methods)
@@ -85,8 +103,8 @@ namespace GraphqlController.GraphQl
                     continue;
                 }
 
-                var descriptionAttr = method.GetAttribute<FieldDescriptionAttribute>();
-                var fieldNameAttr = method.GetAttribute<FieldNameAttribute>();
+                var descriptionAttr = method.GetAttribute<DescriptionAttribute>();
+                var fieldNameAttr = method.GetAttribute<NameAttribute>();
 
                 IGraphType graphType;
                 IFieldResolver resolver;
@@ -121,6 +139,12 @@ namespace GraphqlController.GraphQl
                 // add the .net type of this field in the metadata
                 field.Metadata["type"] = method;
 
+                var metadatas = Attribute.GetCustomAttributes(type, typeof(MetadataAttribute));
+                foreach (MetadataAttribute metadata in metadatas)
+                {
+                    Metadata[metadata.Key] = metadata.Value;
+                }
+
                 AddField(field);
             }
         }
@@ -141,8 +165,8 @@ namespace GraphqlController.GraphQl
                     continue;
                 }
 
-                var argumentNameAttr = param.GetAttribute<ArgumentNameAttribute>();
-                var argumentDescriptionAttr = param.GetAttribute<ArgumentDescriptionAttribute>();
+                var argumentNameAttr = param.GetAttribute<NameAttribute>();
+                var argumentDescriptionAttr = param.GetAttribute<DescriptionAttribute>();
                 var isNonNullType = param.GetAttribute<NonNullAttribute>() != null;
 
                 var name = argumentNameAttr == null ? param.Name : argumentNameAttr.Name;
@@ -179,7 +203,7 @@ namespace GraphqlController.GraphQl
                     continue;
                 }
 
-                var nameAttr = param.GetAttribute<ArgumentNameAttribute>();
+                var nameAttr = param.GetAttribute<NameAttribute>();
 
                 object defaultValue;
                 if (param.HasDefaultValue)
@@ -191,14 +215,20 @@ namespace GraphqlController.GraphQl
                     defaultValue = GetDefault(param.ParameterType);
                 }
 
-                var value = c.GetArgument(param.ParameterType, nameAttr == null ? param.Name : nameAttr.Name);
+                var value = c.GetArgument(param.ParameterType, nameAttr == null ? param.Name : nameAttr.Name, defaultValue);
                 parameterValues.Add(value);
             }
 
             var resultValue = method.Invoke(GetSourceInstance(c, type, isRoot), parameterValues.ToArray());
 
-            return resultValue;
+            return GetFinalValue(resultValue);
         }
+
+        // check final result
+        private static object GetFinalValue(object result)
+            => typeof(IUnionGraphType).IsAssignableFrom(result.GetType())
+               ? (result as IUnionGraphType).Value
+               : result;
 
         // Get deafult value of type
         private static object GetDefault(Type type)
