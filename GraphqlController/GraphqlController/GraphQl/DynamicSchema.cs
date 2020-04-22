@@ -10,13 +10,8 @@ namespace GraphqlController.GraphQl
 {
     public class DynamicSchema : Schema
     {
-        public DynamicSchema(IGraphQlTypePool pool, IAssemblyResolver assemblyResolver)
-        {
-            var rootType = assemblyResolver.GetAssemblies()
-                .SelectMany(x => x.GetTypes())
-                .Where(x => typeof(IGraphNodeType).IsAssignableFrom(x))
-                .FirstOrDefault(x => Attribute.GetCustomAttribute(x, typeof(RootTypeAttribute)) != null);
-
+        public DynamicSchema(IGraphQlTypePool pool, Type rootType)
+        {           
             if(rootType == null)
             {
                 throw new InvalidOperationException("Cannot find Root type, make sure that it is a valid GraphNodeType and has RootType attriobute");
@@ -24,7 +19,7 @@ namespace GraphqlController.GraphQl
 
             var graphqlRootType = pool.GetRootGraphType(rootType);
 
-            Query = graphqlRootType as IObjectGraphType;
+            Query = graphqlRootType as IObjectGraphType;            
         }
     }
 }

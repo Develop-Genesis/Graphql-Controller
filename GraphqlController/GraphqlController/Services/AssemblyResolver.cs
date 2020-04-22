@@ -8,11 +8,16 @@ namespace GraphqlController.Services
 {
     public class AssemblyResolver : IAssemblyResolver
     {
-        Assembly[] _assemblies;
+        List<Assembly> _assemblies;
 
-        public AssemblyResolver(IEnumerable<Assembly> assemblies)
+        public AssemblyResolver()
         {
-            _assemblies = assemblies.ToArray();
+            _assemblies = new List<Assembly>();
+        }
+
+        internal void AddAssembly(Assembly assembly)
+        {
+            _assemblies.Add(assembly);
         }
 
         public IEnumerable<Assembly> GetAssemblies() => _assemblies;

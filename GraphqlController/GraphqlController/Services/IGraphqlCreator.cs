@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.Services
 {
-    public interface IGraphqlCreator
+    public interface IGraphqlResolver
     {
         Task<T> CreateGraphqlEnityAsync<T, P>(P parameters, CancellationToken cancellationToken = default) where T : GraphNodeType<P>;
         Task<T> CreateGraphqlEnityAsync<T>(CancellationToken cancellationToken = default) where T : GraphNodeType;

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.Services
 {
-    public class GraphqlCreator : IGraphqlCreator
+    public class GraphqlResolver : IGraphqlResolver
     {
         IServiceProvider _serviceProvider; 
 
-        public GraphqlCreator(IScopedServiceProviderResolver serviceProviderResolver)
+        public GraphqlResolver(IScopedServiceProviderResolver serviceProviderResolver)
         {
             _serviceProvider = serviceProviderResolver.GetProvider();
         }

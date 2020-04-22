@@ -13,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using GraphqlController.Services;
 using GraphiQl;
 using GraphqlController.WebAppTest.Repositories;
+using GraphqlController.AspNet;
+using GraphqlController.WebAppTest.Types;
 
 namespace GraphqlController.WebAppTest
 {
@@ -30,7 +32,18 @@ namespace GraphqlController.WebAppTest
         {
             services.AddControllers();
 
-            services.AddGraphQlController();
+            services.AddGraphQlController()
+                    .AddCurrentAssembly();
+                       
+            services.AddGraphQlEndpoint();
+
+            //services.AddGraphQL(options =>
+            //{
+            //    options.EnableMetrics = true;
+            //    options.ExposeExceptions = true;
+            //    options.UnhandledExceptionDelegate = ctx => { Console.WriteLine(ctx.OriginalException); };
+            //})
+            //.AddSystemTextJson(deserializerSettings => { }, serializerSettings => { }); // For .NET Core 3+       
 
             services.AddScoped<TeacherRepository>();
         }
@@ -43,16 +56,22 @@ namespace GraphqlController.WebAppTest
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseGraphiQl("/graphi", "/graphql");
+            // use HTTP middleware for ChatSchema at path /graphql
+            //app.UseGraphQL<ISchema>("/graphql");
+
+            app.UseGraphiQl("/graphi", "/graphql/jojoto");
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
+                        
             app.UseAuthorization();
+
+            app.UseGraphQLController();
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGraphQLEnpoint<Root>("/graphql/jojoto");
                 endpoints.MapControllers();
             });
         }
