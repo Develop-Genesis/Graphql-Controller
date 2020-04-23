@@ -14,12 +14,23 @@ namespace GraphqlController.GraphQl
         {           
             if(rootType == null)
             {
-                throw new InvalidOperationException("Cannot find Root type, make sure that it is a valid GraphNodeType and has RootType attriobute");
+                throw new InvalidOperationException("Cannot find Root type, make sure that it is a valid GraphNodeType and has RootType attribute");
             }
 
             var graphqlRootType = pool.GetRootGraphType(rootType);
 
-            Query = graphqlRootType as IObjectGraphType;            
+            Query = graphqlRootType as IObjectGraphType;
+
+            var allInterfaces = Query.GetAllInterfaces();
+
+            foreach(var intrface in allInterfaces)
+            {
+                var implementations = pool.GetInterfaceImplementations(intrface.Name);
+                RegisterTypes(implementations.ToArray());
+            }
         }
+
+
+
     }
 }

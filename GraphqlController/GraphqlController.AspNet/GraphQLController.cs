@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphQL;
@@ -27,7 +28,7 @@ namespace GraphqlController.AspNet
                 
         [HttpPost]
         public Task<GraphQlResponse> ExecuteQuery([FromBody]GraphQlRequestBody body, CancellationToken cancellationToken)
-            => Execute(body.Query, body.OperationName, body.Variables?.ToInputs(), cancellationToken);
+            => Execute(body.Query, body.OperationName, null/*body.Variables?.ToInputs()*/, cancellationToken);
 
         [HttpGet]
         public Task<GraphQlResponse> ExecuteQuery([FromQuery]string query, [FromQuery]string operationName, [FromQuery]string variables, CancellationToken cancellationToken)
@@ -48,7 +49,17 @@ namespace GraphqlController.AspNet
             return new GraphQlResponse()
             {
                 Data = result.Data,
-                Errors = result.Errors
+                Errors = result.Errors?.Select(error => new GraphQLError()
+                {
+                    Message = error.Message,
+                    Path = error.Path,
+                    Locations = error.Locations?.Select(loc => new ErrorLocation
+                    {
+                        Column = loc.Column,
+                        Line = loc.Line
+                    }),
+                    Extensions = error.DataAsDictionary
+                })
             };
         }
 

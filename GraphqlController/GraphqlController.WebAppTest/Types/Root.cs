@@ -20,10 +20,10 @@ namespace GraphqlController.WebAppTest.Types
             _teacherRepository = teacherRepository;
         }
 
-        /// <summary>
-        /// The teachers in the school
-        /// </summary>
-        public Teacher[] Teachers => _teacherRepository.GetTeachers().ToArray();
+        // <summary>
+        // The teachers in the school
+        // </summary>
+         public Teacher[] Teachers => _teacherRepository.GetTeachers().ToArray();
 
         /// <summary>
         /// All people in the school
@@ -46,7 +46,7 @@ namespace GraphqlController.WebAppTest.Types
         /// <param name="param1">Parameter 1</param>
         /// <param name="param2">Parameter 2</param>
         /// <returns></returns>
-        public IPerson TestInput([NonNull]TestInputType param1, string param2)
+        public IPerson TestInput([NonNull]TestInputType param1, string param2)  
         {
             return new Teacher() { Name = param1.Hola, LastName = param1.HolaHi };
         }

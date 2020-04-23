@@ -7,6 +7,7 @@ namespace GraphqlController.GraphQl
 {
     public interface IGraphQlTypePool
     {
+        IEnumerable<IGraphType> GetInterfaceImplementations(string interfaceName);
         IGraphType GetGraphType(Type type);
         IGraphType GetInputType(Type type);
         IGraphType GetRootGraphType(Type rootType);        

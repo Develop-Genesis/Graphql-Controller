@@ -59,7 +59,7 @@ namespace GraphqlController.WebAppTest
             // use HTTP middleware for ChatSchema at path /graphql
             //app.UseGraphQL<ISchema>("/graphql");
 
-            app.UseGraphiQl("/graphi", "/graphql/jojoto");
+            app.UseGraphiQl("/graphi", "/graphql/root");
 
             app.UseHttpsRedirection();
 
@@ -71,7 +71,8 @@ namespace GraphqlController.WebAppTest
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGraphQLEnpoint<Root>("/graphql/jojoto");
+                endpoints.MapGraphQLEnpoint<Root>("/graphql/root");
+                endpoints.MapGraphQLEnpoint<Root2>("/graphql/root2");
                 endpoints.MapControllers();
             });
         }

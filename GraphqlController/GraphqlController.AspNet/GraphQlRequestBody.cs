@@ -10,6 +10,6 @@ namespace GraphqlController.AspNet
     {
         public string Query { get; set; }
         public string OperationName { get; set; }
-        public string Variables { get; set; }
+        // public object Variables { get; set; }
     }
 }

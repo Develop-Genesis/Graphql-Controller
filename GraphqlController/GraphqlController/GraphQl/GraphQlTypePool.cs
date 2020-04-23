@@ -26,6 +26,8 @@ namespace GraphqlController.GraphQl
         private Dictionary<Type, IGraphType> UnionTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> InterfaceTypeMap = new Dictionary<Type, IGraphType>();
 
+        private Dictionary<string, List<IGraphType>> InterfaceImplementations = new Dictionary<string, List<IGraphType>>();
+
         private Dictionary<Type, IGraphType> InputObjectTypeMap = new Dictionary<Type, IGraphType>();
 
         public IGraphType GetRootGraphType(Type rootType)
@@ -77,7 +79,7 @@ namespace GraphqlController.GraphQl
                 {
                     result = new DynamicInterfaceType(this, type);
                     InterfaceTypeMap.Add(type, result);
-                    RegisterInterfaceTypes(type);
+                    RegisterInterfaceTypes(type, result.Name);
                 }
 
                 return result;
@@ -167,7 +169,7 @@ namespace GraphqlController.GraphQl
             return result;
         }      
         
-        private void RegisterInterfaceTypes(Type intrfce)
+        private void RegisterInterfaceTypes(Type intrfce, string interfaceName)
         {
             // Get all the types that implement the interface
             var types = _assemblyResolver.GetAssemblies().SelectMany(assembly => assembly.GetTypes()
@@ -176,9 +178,21 @@ namespace GraphqlController.GraphQl
             // Add all the types that implement the interface to the pool
             foreach(var type in types)
             {
-                GetGraphType(type);
+                List<IGraphType> implementors;
+
+                if(!InterfaceImplementations.TryGetValue(interfaceName, out implementors))
+                {
+                    implementors = new List<IGraphType>();
+                    InterfaceImplementations.Add(interfaceName, implementors);
+                }
+
+                implementors.Add(GetGraphType(type));                
             }
         }
 
+        public IEnumerable<IGraphType> GetInterfaceImplementations(string interfaceName)
+        {
+            return InterfaceImplementations[interfaceName];
+        }
     }
 }
