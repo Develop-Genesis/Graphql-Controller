@@ -1,4 +1,5 @@
 ﻿using GraphqlController.Attributes;
+using GraphqlController.Services;
 using GraphqlController.WebAppTest.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace GraphqlController.WebAppTest.Types
     /// </summary>
     [RootType]
     public class Root : GraphNodeType
-    {
+    {        
         TeacherRepository _teacherRepository;
 
         public Root(TeacherRepository teacherRepository)
@@ -48,6 +49,8 @@ namespace GraphqlController.WebAppTest.Types
         /// <returns></returns>
         public IPerson TestInput([NonNull]TestInputType param1, string param2)  
         {
+            IGraphqlResolver resolver;
+            resolver.CreateGraphqlEnityAsync<Teacher, Student>(new Student() { }, default);
             return new Teacher() { Name = param1.Hola, LastName = param1.HolaHi };
         }
 

@@ -6,6 +6,7 @@
     <RepositoryUrl>https://github.com/aleGuardiola/Graphql-Controller</RepositoryUrl>
     <PackageProjectUrl>https://github.com/aleGuardiola/Graphql-Controller</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
