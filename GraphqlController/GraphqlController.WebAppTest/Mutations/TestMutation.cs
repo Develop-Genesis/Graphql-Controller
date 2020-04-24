@@ -10,16 +10,24 @@ namespace GraphqlController.WebAppTest.Mutations
     [Mutation(typeof(Root))]
     public class TestMutation : GraphNodeType
     {
-        public Task<IEnumerable<IPerson>> AllPeople(int take) => Task.FromResult(new IPerson[]
+        /// <summary>
+        /// Add a person
+        /// </summary>
+        /// <param name="user">the person to add</param>
+        /// <returns></returns>
+        public async Task<string> AddPerson(User user) 
         {
-            new Teacher(){ Name = "Roberto", LastName = "Gonzales" },
-            new Teacher(){ Name = "Jose", LastName = "Martinez" },
-            new Teacher(){ Name = "Landy", LastName = "Acosta" },
-            new Teacher(){ Name = "Rubio", LastName = "Jaime" },
-            new Student(),
-            new Student(),
-            new Student(),
-            new Student()
-        }.Take(take));
+
+
+
+            return "OK";
+        }
     }
+
+    public class User
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+
 }

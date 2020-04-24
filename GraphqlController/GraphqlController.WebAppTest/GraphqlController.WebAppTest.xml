@@ -4,6 +4,13 @@
         <name>GraphqlController.WebAppTest</name>
     </assembly>
     <members>
+        <member name="M:GraphqlController.WebAppTest.Mutations.TestMutation.AddPerson(GraphqlController.WebAppTest.Mutations.User)">
+            <summary>
+            Add a person
+            </summary>
+            <param name="user">the person to add</param>
+            <returns></returns>
+        </member>
         <member name="T:GraphqlController.WebAppTest.Types.IPerson">
             <summary>
             A person in the school
