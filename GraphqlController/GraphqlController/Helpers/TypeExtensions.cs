@@ -44,6 +44,16 @@ namespace GraphqlController.Helpers
             return instance as T;
         }
 
+        public static IEnumerable<Type> GetInterfacesIncludingType(this Type type)
+        {
+            if (type.IsInterface)
+                yield return type;
+
+            foreach(var intrfce in type.GetInterfaces())
+            {
+                yield return intrfce;
+            }
+        }
 
         // I liked this code, from https://stackoverflow.com/questions/52758745/get-interfaces-implemented-by-class
         public static IEnumerable<Type> GetNotDerivedInterfaces(this Type type)

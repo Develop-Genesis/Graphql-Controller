@@ -24,7 +24,7 @@
             The root type
             </summary>
         </member>
-        <member name="P:GraphqlController.WebAppTest.Types.Root.AllPeople">
+        <member name="M:GraphqlController.WebAppTest.Types.Root.AllPeople">
             <summary>
             All people in the school
             </summary>

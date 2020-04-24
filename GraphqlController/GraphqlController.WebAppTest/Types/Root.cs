@@ -28,7 +28,7 @@ namespace GraphqlController.WebAppTest.Types
         /// <summary>
         /// All people in the school
         /// </summary>
-        public IPerson[] AllPeople => new IPerson[]
+        public Task<IPerson[]> AllPeople() => Task.FromResult(new IPerson[]
         {
             new Teacher(){ Name = "Roberto", LastName = "Gonzales" },
             new Teacher(){ Name = "Jose", LastName = "Martinez" },
@@ -38,7 +38,7 @@ namespace GraphqlController.WebAppTest.Types
             new Student(),
             new Student(),
             new Student()
-        };
+        });
 
         /// <summary>
         /// Testing the input

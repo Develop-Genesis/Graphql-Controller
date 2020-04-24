@@ -24,7 +24,10 @@ namespace GraphqlController.Services
 
             foreach(var rootType in rootTypes)
             {
-                var schema = new DynamicSchema(_graphQlTypePool, rootType);
+                var mutationTypes = _assemblyResolver.GetMutationTypes(rootType);
+                var subscriptionTypes = _assemblyResolver.GetSubscriptionTypes(rootType);
+
+                var schema = new DynamicSchema(_graphQlTypePool, rootType, mutationTypes, subscriptionTypes);
                 _rootTypeSchema.Add(rootType, schema);
             }
 

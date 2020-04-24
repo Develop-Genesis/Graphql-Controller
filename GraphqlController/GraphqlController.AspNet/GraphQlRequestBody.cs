@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
-namespace GraphqlController.AspNet
+namespace GraphqlController.AspNetCore
 {
     public class GraphQlRequestBody
     {

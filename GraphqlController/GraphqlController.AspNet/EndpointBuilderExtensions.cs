@@ -5,7 +5,7 @@ using GraphqlController.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 
-namespace GraphqlController.AspNet
+namespace GraphqlController.AspNetCore
 {
     public static class EndpointBuilderExtensions
     {

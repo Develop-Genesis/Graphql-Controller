@@ -10,6 +10,8 @@ namespace GraphqlController.GraphQl
         IEnumerable<IGraphType> GetInterfaceImplementations(string interfaceName);
         IGraphType GetGraphType(Type type);
         IGraphType GetInputType(Type type);
-        IGraphType GetRootGraphType(Type rootType);        
+        IGraphType GetRootGraphType(Type rootType);
+        IGraphType GetSubscriptionType(IEnumerable<Type> subscriptionTypes);
+        IGraphType GetMutationType(IEnumerable<Type> mutationTypes);
     }
 }

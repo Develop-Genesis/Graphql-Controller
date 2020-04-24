@@ -5,13 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using GraphQL;
 using GraphQL.Types;
-using GraphqlController.AspNet;
+using GraphqlController.AspNetCore;
 using GraphqlController.Execution;
 using GraphqlController.Services;
 using Microsoft.AspNetCore.Mvc;
 
 
-namespace GraphqlController.AspNet
+namespace GraphqlController.AspNetCore
 {   
     public class GraphQLController : ControllerBase
     {

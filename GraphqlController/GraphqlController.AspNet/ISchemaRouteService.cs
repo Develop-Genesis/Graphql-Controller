@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GraphqlController.AspNet
+namespace GraphqlController.AspNetCore
 {
     public interface ISchemaRouteService
     {

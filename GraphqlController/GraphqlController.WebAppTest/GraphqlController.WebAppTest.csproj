@@ -10,10 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="GraphiQL" Version="2.0.0-beta1" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GraphqlController.AspNet\GraphqlController.AspNet.csproj" />
+    <ProjectReference Include="..\GraphqlController.AspNet\GraphqlController.AspNetCore.csproj" />
     <ProjectReference Include="..\GraphqlController\GraphqlController.csproj" />
   </ItemGroup>
 

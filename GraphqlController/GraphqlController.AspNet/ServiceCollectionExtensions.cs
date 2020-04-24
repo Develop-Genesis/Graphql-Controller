@@ -2,7 +2,7 @@
 using System;
 using System.Reflection;
 
-namespace GraphqlController.AspNet
+namespace GraphqlController.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {

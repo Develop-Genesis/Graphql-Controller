@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using GraphqlController.Helpers;
 using GraphqlController.Services;
 using System;
 using System.Collections;
@@ -33,6 +34,12 @@ namespace GraphqlController.GraphQl
         public IGraphType GetRootGraphType(Type rootType)
            => new DynamicGraphType(this, rootType, true);
 
+        public IGraphType GetSubscriptionType(IEnumerable<Type> subscriptionTypes)
+           => new DynamicSubscriptionType(this, subscriptionTypes);
+
+        public IGraphType GetMutationType(IEnumerable<Type> mutationTypes)
+           => new DynamicMutationType(this, mutationTypes);
+
         public GraphQlTypePool(IAssemblyResolver assemblyResolver)
         {
             _assemblyResolver = assemblyResolver;
@@ -49,7 +56,8 @@ namespace GraphqlController.GraphQl
             // Check if it is a list
             if(typeof(IEnumerable).IsAssignableFrom(type))
             {
-                var enumItemType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)).GetGenericArguments()[0];
+                var enumItemType = type.GetInterfacesIncludingType()
+                                       .First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IEnumerable<>)).GetGenericArguments()[0];
                 return new ListGraphType(GetGraphType(enumItemType));
             }
 
@@ -194,5 +202,6 @@ namespace GraphqlController.GraphQl
         {
             return InterfaceImplementations[interfaceName];
         }
+
     }
 }

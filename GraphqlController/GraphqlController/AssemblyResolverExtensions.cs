@@ -1,4 +1,5 @@
 ﻿using GraphqlController.Attributes;
+using GraphqlController.Helpers;
 using GraphqlController.Services;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,20 @@ namespace GraphqlController
           => assemblyResolver.GetAssemblies()
                 .SelectMany(x => x.GetTypes())
                 .Where(x => typeof(IGraphNodeType).IsAssignableFrom(x))
-                .Where(x => Attribute.GetCustomAttribute(x, typeof(RootTypeAttribute)) != null);
+                .Where(x => x.GetAttribute<RootTypeAttribute>() != null);
 
+        public static IEnumerable<Type> GetSubscriptionTypes(this IAssemblyResolver assemblyResolver, Type rootType)
+          => assemblyResolver.GetAssemblies()
+                             .SelectMany(x => x.GetTypes())
+                             .Where(x => typeof(IGraphNodeType).IsAssignableFrom(x))
+                             .Where(x => x.GetAttribute<SubscriptionAttribute>() != null)
+                             .Where(x => x.GetAttribute<SubscriptionAttribute>().Root == rootType);
+
+        public static IEnumerable<Type> GetMutationTypes(this IAssemblyResolver assemblyResolver, Type rootType)
+          => assemblyResolver.GetAssemblies()
+                             .SelectMany(x => x.GetTypes())
+                             .Where(x => typeof(IGraphNodeType).IsAssignableFrom(x))
+                             .Where(x => x.GetAttribute<MutationAttribute>() != null)
+                             .Where(x => x.GetAttribute<MutationAttribute>().Root == rootType);
     }
 }
