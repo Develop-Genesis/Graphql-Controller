@@ -27,9 +27,13 @@ namespace GraphqlController.WebAppTest
 
             services.AddGraphQlController()
                     .AddCurrentAssembly();
-                       
+
+            services.AddMemoryCache();
+
+            services.AddDistributedMemoryCache();
+
             services.AddGraphQlEndpoint()
-                    .AddInMemoryPersistedQuery();
+                    .AddDistributedPersistedQuery();
 
             services.AddScoped<TeacherRepository>();
         }

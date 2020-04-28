@@ -9,7 +9,7 @@ import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from "apollo-cache-inmemory";
 
 // use this with Apollo Client
-const link = createPersistedQueryLink().concat(createHttpLink({ uri: "https://localhost:44399/graphql/root" }));
+const link = createPersistedQueryLink({useGETForHashedQueries: true}).concat(createHttpLink({ uri: "https://localhost:44399/graphql/root" }));
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: link,

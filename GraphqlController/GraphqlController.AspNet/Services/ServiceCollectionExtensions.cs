@@ -34,7 +34,12 @@ namespace GraphqlController.AspNetCore
         /// <param name="services"></param>
         /// <returns></returns>
         public static IServiceCollection AddInMemoryPersistedQuery(this IServiceCollection services)
-            => services.AddPersistedGraphqlQuerySingleton<InMemoryPersistedQueryCache>();
+            => services.AddPersistedGraphqlQueryScoped<InMemoryPersistedQueryCache>();
+
+        public static IServiceCollection AddDistributedPersistedQuery(this IServiceCollection services)
+            => services.AddPersistedGraphqlQueryScoped<DistributedPersistedQueryCache>();
+
+
 
     }
 }
