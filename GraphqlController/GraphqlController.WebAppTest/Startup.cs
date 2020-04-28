@@ -28,7 +28,8 @@ namespace GraphqlController.WebAppTest
             services.AddGraphQlController()
                     .AddCurrentAssembly();
                        
-            services.AddGraphQlEndpoint();
+            services.AddGraphQlEndpoint()
+                    .AddInMemoryPersistedQuery();
 
             services.AddScoped<TeacherRepository>();
         }
@@ -39,6 +40,7 @@ namespace GraphqlController.WebAppTest
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseCors(b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             }
 
             app.UseGraphiQl("/graphi", "/graphql/root");

@@ -49,12 +49,18 @@ namespace GraphqlController.WebAppTest.Types
         /// <returns></returns>
         public IPerson TestInput([NonNull]TestInputType param1, string param2)  
         {
-            IGraphqlResolver resolver;
-            resolver.CreateGraphqlEnityAsync<Teacher, Student>(new Student() { }, default);
             return new Teacher() { Name = param1.Hola, LastName = param1.HolaHi };
         }
 
         public UnionT UnionTest => new UnionT(new TypeA() { A = "Hola" });
+
+        public INode Node(string id)
+        {
+            return new Student()
+            {
+                Id = "adfdadsa",                
+            };
+        }
 
     }
 

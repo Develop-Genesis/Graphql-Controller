@@ -17,9 +17,6 @@ namespace GraphqlController.WebAppTest.Mutations
         /// <returns></returns>
         public async Task<string> AddPerson(User user) 
         {
-
-
-
             return "OK";
         }
     }
@@ -30,26 +27,7 @@ namespace GraphqlController.WebAppTest.Mutations
         public string LastName { get; set; }
     }
 
-    [Mutation(typeof(Root))]
-    public class StudentMutations : GraphNodeType
-    {
-        /// <summary>
-        /// Add a new student to the database
-        /// </summary>
-        /// <param name="student">The student to add</param>
-        /// <returns></returns>
-        public Student AddStudent([NonNull]StudentInput student)
-        {
-            
-            return new Student()
-            {
-                Name = student.Name,
-                LastName = student.LastName,
-                Grades = student.Grades
-            };
-        }
-    }
-
+    
     public class StudentInput
     {
         /// <summary>

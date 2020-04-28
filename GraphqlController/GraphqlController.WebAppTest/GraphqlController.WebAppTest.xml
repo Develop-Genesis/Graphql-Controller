@@ -11,6 +11,21 @@
             <param name="user">the person to add</param>
             <returns></returns>
         </member>
+        <member name="P:GraphqlController.WebAppTest.Mutations.StudentInput.Name">
+            <summary>
+            Name of the student
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Mutations.StudentInput.LastName">
+            <summary>
+            Last name of the student
+            </summary>
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Mutations.StudentInput.Grades">
+            <summary>
+            Grades
+            </summary>
+        </member>
         <member name="T:GraphqlController.WebAppTest.Types.IPerson">
             <summary>
             A person in the school

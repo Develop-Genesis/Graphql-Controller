@@ -8,8 +8,9 @@ namespace GraphqlController.WebAppTest.Types
     /// <summary>
     /// An student of the school
     /// </summary>
-    public class Student : IPerson
+    public class Student : INode, IPerson
     {
+        public string Id { get; set; }
         /// <summary>
         /// Name of the student
         /// </summary>
@@ -19,5 +20,6 @@ namespace GraphqlController.WebAppTest.Types
         /// Last name of the student
         /// </summary>
         public string LastName => "Guardiola";
+
     }
 }

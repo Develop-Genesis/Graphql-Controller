@@ -6,16 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 
 namespace GraphqlController.AspNetCore
-{
-    public class GraphQlResponse
-    {
-        public object Data { get; set; }
-
-        public IEnumerable<GraphQLError> Errors { get; set; }
-
-        public bool ShouldSerializeErrors()
-            => Errors == null;
-    }
+{  
 
     public class GraphQLError
     {

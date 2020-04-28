@@ -6,10 +6,22 @@ using System.Text.Json;
 
 namespace GraphqlController.AspNetCore
 {
-    public class GraphQlRequestBody
+    public class GraphQlRequest
     {
         public string Query { get; set; }
         public string OperationName { get; set; }
-        // public object Variables { get; set; }
+        public JObject Variables { get; set; }
+        public GraphqlExtensions Extensions { get; set; }        
+    }
+
+    public class GraphqlExtensions
+    {
+        public GraphqlPersistedQuery PersistedQuery { get; set; }
+    }
+
+    public class GraphqlPersistedQuery
+    {
+        public int Version { get; set; }
+        public string Sha256Hash { get; set; }
     }
 }
