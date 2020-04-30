@@ -71,15 +71,15 @@ and it also represent a graphql api
    {
       public Student Student => new Student()
       { 
-         Name = "Jhon",
-         LastName = "Robinson",
-         Grades = 80
+         Name => "Jhon",
+         LastName => "Robinson",
+         Grades => 80
       }
 
       public Teacher Teacher = new Teacher()
       {
-         Name = "Alejandro",
-         LastName = "Guardiola"
+         Name => "Alejandro",
+         LastName => "Guardiola"
       }
    }
 
@@ -152,9 +152,9 @@ Root.cs
     { 
        return new Student()
        {
-          Name = "Jhon",
-          LastName = "Robinson",
-          Grades = 80
+          Name => "Jhon",
+          LastName => "Robinson",
+          Grades => 80
        }       
     }
 
@@ -190,9 +190,9 @@ To create custom attribute types, just create the .net class for it
     { 
        return new Student()
        {
-          Name = "Jhon",
-          LastName = "Robinson",
-          Grades = 80
+          Name => "Jhon",
+          LastName => "Robinson",
+          Grades => 80
        }       
     }
     
@@ -239,21 +239,21 @@ Root.cs:
         {
             new Student()
             {
-                Name = "Jhon",
-                LastName = "Robinson",
-                Grades = 80
+                Name => "Jhon",
+                LastName => "Robinson",
+                Grades => 80
             },
             new Student()
             {
-                Name = "Jhonatan",
-                LastName = "Cruz",
-                Grades = 60
+                Name => "Jhonatan",
+                LastName => "Cruz",
+                Grades => 60
             },
             new Student()
             {
-                Name = "Rubio",
-                LastName = "Acosta",
-                Grades = 30
+                Name => "Rubio",
+                LastName => "Acosta",
+                Grades => 30
             },
         }.Skip(skip).Take(take);
     }
@@ -301,21 +301,21 @@ for example:
         {
             new Student()
             {
-                Name = "Jhon",
-                LastName = "Robinson",
-                Grades = 80
+                Name => "Jhon",
+                LastName => "Robinson",
+                Grades => 80
             },
             new Student()
             {
-                Name = "Jhonatan",
-                LastName = "Cruz",
-                Grades = 60
+                Name => "Jhonatan",
+                LastName => "Cruz",
+                Grades => 60
             },
             new Student()
             {
-                Name = "Rubio",
-                LastName = "Acosta",
-                Grades = 30
+                Name => "Rubio",
+                LastName => "Acosta",
+                Grades => 30
             },
         }.Skip(skip).Take(take);
     }
@@ -359,8 +359,8 @@ Root.cs
     {
         return Teacher = new Teacher()
         {
-            Name = "Alejandro",
-            LastName = "Guardiola"
+            Name => "Alejandro",
+            LastName => "Guardiola"
         }
     }
 
@@ -689,6 +689,88 @@ Root.cs
         return await _graphqlResolver.CreateGraphqlEnityAsync<Teacher, TeacherDomain>(teacherDomain, cancellationToken);
     }
 
+```
+
+## Persisted Queries
+A persisted query is an ID or hash that can be sent to the server instead of the entire GraphQL query string. This smaller signature reduces bandwidth utilization and speeds up client loading times. Persisted queries are especially nice paired with GET requests, enabling the browser cache and integration with a CDN.
+(Copied from the Apollo documentation)
+
+Persisted queries are implmented using the Apollo protocol
+https://github.com/apollographql/apollo-link-persisted-queries#protocol
+
+#### How to enable Persisted Queries
+
+Persisted queries can be cached using memory cache or a distributed cache.
+
+##### Persisted queries using Memory Cache
+Using memory cache the queries are stored on the app memory. This aproach works 
+well for the majority of many cases:
+
+Pros:
+   * It is fast because works with the app memory
+   * Dont need an external service or store
+   * Dont need any configuration
+
+Cons:
+   * Cannot be share between multiple app instances
+   * The cache is reseted every time the app restart
+   * Many queries cached can make your memory go higher
+
+To enable Persisted queries with memory cache call, you have to make sure 
+you have Asp.net core memory cache added to your services you can learn more here:
+https://docs.microsoft.com/en-us/aspnet/core/performance/caching/memory?view=aspnetcore-3.1
+
+In your Startup.cs in ConfigureServices add:
+```csharp
+
+    // add asp.net core memory cache
+    services.AddMemoryCache();
+
+    services.AddGraphQlEndpoint()
+    // add in memory persisted query support
+            .AddInMemoryPersistedQuery();
+
+```
+
+## Cache
+
+To add cache to the resources that don't change frecuently you have to use the CacheAttribute
+and specifing the max age in second that the resource will can be cached.
+
+```csharp
+
+```
+
+##### Persisted queries using Distributed Cache
+(From Microsoft docs)
+A distributed cache is a cache shared by multiple app servers, typically maintained as an external service to the app servers that access it. A distributed cache can improve the performance and scalability of an ASP.NET Core app, especially when the app is hosted by a cloud service or a server farm.
+
+A distributed cache has several advantages over other caching scenarios where cached data is stored on individual app servers.
+
+Pros:
+  * Is coherent (consistent) across requests to multiple servers.
+  * Survives server restarts and app deployments.
+  * Doesn't use local memory.
+
+Cons:
+  * Require external cache service (Redis, NCache, etc...)
+  * Require more configuration
+  * Slighty slower than Memory Cache
+
+To use it first add the distributed cache: 
+https://docs.microsoft.com/en-us/aspnet/core/performance/caching/distributed?view=aspnetcore-3.1
+
+and then call AddDistributedPersistedQuery in your services.
+
+In your Startup.cs in ConfigureServices add:
+```csharp
+
+    // add asp.net core memory cache
+    services.AddMemoryCache();
+
+    services.AddGraphQlEndpoint()
+    // add distributed persisted query support
+            .AddDistributedPersistedQuery();
 ```
 
 #### Progress
