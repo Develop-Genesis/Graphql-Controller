@@ -88,25 +88,25 @@ namespace GraphqlController.AspNetCore
                 else
                 {
                     HttpContext.Response.Headers.Add(HeaderNames.CacheControl, $"{scope.ToHttpHeader()}, max-age={maxAge}");
-                }
+                }                
+            }
 
-                if(_cacheConfiguration.IncludeETag)
+            if (_cacheConfiguration.IncludeETag)
+            {
+                var etag = Helpers.GetSha256Hash(JsonConvert.SerializeObject(result));
+
+                // Check if the client has if not match header with etag
+                StringValues clientIfNotMatch;
+                if (HttpContext.Request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out clientIfNotMatch))
                 {
-                    var etag = Helpers.GetSha256Hash(JsonConvert.SerializeObject(result));
-
-                    // Check if the client has if not match header with etag
-                    StringValues clientIfNotMatch;
-                    if(HttpContext.Request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out clientIfNotMatch))
+                    if (clientIfNotMatch.FirstOrDefault() == etag)
                     {
-                        if(clientIfNotMatch.FirstOrDefault() == etag)
-                        {
-                            // send 304 status code (Not modified)
-                            return StatusCode(304);
-                        }
+                        // send 304 status code (Not modified)
+                        return StatusCode(304);
                     }
-
-                    HttpContext.Response.Headers.Add(HeaderNames.ETag, etag);
                 }
+
+                HttpContext.Response.Headers.Add(HeaderNames.ETag, etag);
             }
 
             return new ActionResult<Dictionary<string, object>>(result);
