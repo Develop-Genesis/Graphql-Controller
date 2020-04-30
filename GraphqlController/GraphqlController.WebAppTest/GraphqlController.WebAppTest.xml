@@ -67,7 +67,7 @@
         <member name="T:GraphqlController.WebAppTest.Types.Student">
             <summary>
             An student of the school
-            </summary>
+            </summary>    
         </member>
         <member name="P:GraphqlController.WebAppTest.Types.Student.Name">
             <summary>

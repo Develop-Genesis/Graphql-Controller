@@ -1,4 +1,5 @@
-﻿using GraphqlController.Attributes;
+﻿using GraphqlController.AspNetCore.Cache;
+using GraphqlController.Attributes;
 using GraphqlController.Services;
 using GraphqlController.WebAppTest.Repositories;
 using System;
@@ -12,6 +13,7 @@ namespace GraphqlController.WebAppTest.Types
     /// The root type
     /// </summary>
     [RootType]
+    [CacheControl(60 * 10)]
     public class Root : GraphNodeType
     {        
         TeacherRepository _teacherRepository;

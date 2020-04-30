@@ -1,4 +1,6 @@
-﻿using GraphqlController.AspNetCore.PersistedQuery;
+﻿using GraphQL.Instrumentation;
+using GraphqlController.AspNetCore.Cache;
+using GraphqlController.AspNetCore.PersistedQuery;
 using GraphqlController.AspNetCore.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -8,10 +10,29 @@ namespace GraphqlController.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddGraphQlEndpoint(this IServiceCollection services)
+        public static IServiceCollection AddGraphQlEndpoint(this IServiceCollection services, CacheConfiguration cacheConfig = null)
         {
+            if (cacheConfig == null)
+            {
+                cacheConfig = new CacheConfiguration();
+            }
+            else
+            {
+                if(cacheConfig.DefaultMaxAge < 0)
+                {
+                    throw new InvalidOperationException("Default Max Age cannot be less than 0");
+                }
+            }
+
             services.AddSingleton<ISchemaRouteService, SchemaRouteService>();
             services.AddScoped<IPersistedQueryService, PersistedQueryService>();
+
+            services.AddSingleton<IFieldMiddlewareBuilder>(new FieldMiddlewareBuilder());
+
+            services.AddSingleton(cacheConfig);
+
+            services.AddScoped<IGraphqlInAppCacheService, GraphqlInAppCacheService>();
+            services.AddScoped<ICachePolicy, DefaultCachePolicy>();
 
             services.AddControllers().AddApplicationPart(Assembly.GetExecutingAssembly())
                                      .AddControllersAsServices();

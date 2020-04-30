@@ -7,12 +7,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using GraphQL;
-using GraphQL.Types;
+using GraphQL.Instrumentation;
 using GraphqlController.AspNetCore;
+using GraphqlController.AspNetCore.Cache;
 using GraphqlController.AspNetCore.Services;
 using GraphqlController.Execution;
 using GraphqlController.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -23,15 +26,28 @@ namespace GraphqlController.AspNetCore
         ISchemaRouteService _schemaRouteService;
         IGraphQLExecutor _executor;
         IPersistedQueryService _persistedQueryService;
+        IFieldMiddlewareBuilder _fieldMiddlewareBuilder;
+
+        IGraphqlInAppCacheService _cacheInAppService;
+        ICachePolicy _cachePolicy;
+        CacheConfiguration _cacheConfiguration;
 
         public GraphQLController(
+            IGraphqlInAppCacheService cacheInAppService,
             IGraphQLExecutor executor,
             ISchemaRouteService schemaRouteService,
-            IPersistedQueryService persistedQueryService)
-        {            
+            IPersistedQueryService persistedQueryService,
+            IFieldMiddlewareBuilder fieldMiddlewareBuilder,
+            ICachePolicy cachePolicy,
+            CacheConfiguration cacheConfiguration)
+        {
+            _cacheConfiguration = cacheConfiguration;
             _executor = executor;
             _schemaRouteService = schemaRouteService;
             _persistedQueryService = persistedQueryService;
+            _fieldMiddlewareBuilder = fieldMiddlewareBuilder;
+            _cacheInAppService = cacheInAppService;
+            _cachePolicy = cachePolicy;
         }
                 
         [HttpPost]
@@ -49,7 +65,7 @@ namespace GraphqlController.AspNetCore
         }              
 
         [HttpGet]
-        public async Task<Dictionary<string, object>> ExecuteQuery([FromQuery]string query, [FromQuery]string operationName, [FromQuery]string variables, [FromQuery]string extensions, CancellationToken cancellationToken)
+        public async Task<ActionResult<Dictionary<string, object>>> ExecuteQuery([FromQuery]string query, [FromQuery]string operationName, [FromQuery]string variables, [FromQuery]string extensions, CancellationToken cancellationToken)
         {
             var request = new GraphQlRequest()
             {
@@ -60,7 +76,40 @@ namespace GraphqlController.AspNetCore
             };
 
             var result = await ExecuteAndCheckPersistedQuery(request, cancellationToken);
-            return result;
+
+            if(_cacheConfiguration.UseHttpCaching)
+            {
+                var maxAge = _cachePolicy.CalculateMaxAge();
+                var scope = _cachePolicy.GetScope();
+                if(maxAge == 0)
+                {
+                    HttpContext.Response.Headers.Add(HeaderNames.CacheControl, "no-cache");
+                }
+                else
+                {
+                    HttpContext.Response.Headers.Add(HeaderNames.CacheControl, $"{scope.ToHttpHeader()}, max-age={maxAge}");
+                }
+
+                if(_cacheConfiguration.IncludeETag)
+                {
+                    var etag = Helpers.GetSha256Hash(JsonConvert.SerializeObject(result));
+
+                    // Check if the client has if not match header with etag
+                    StringValues clientIfNotMatch;
+                    if(HttpContext.Request.Headers.TryGetValue(HeaderNames.IfNoneMatch, out clientIfNotMatch))
+                    {
+                        if(clientIfNotMatch.FirstOrDefault() == etag)
+                        {
+                            // send 304 status code (Not modified)
+                            return StatusCode(304);
+                        }
+                    }
+
+                    HttpContext.Response.Headers.Add(HeaderNames.ETag, etag);
+                }
+            }
+
+            return new ActionResult<Dictionary<string, object>>(result);
         }
 
 
@@ -94,12 +143,23 @@ namespace GraphqlController.AspNetCore
         {
             var root = GetRoot();
 
+            var cachedResponse = await _cacheInAppService.GetCachedResponseAsync(query, operationName, variables, cancellationToken);
+
+            if(cachedResponse != null)
+            {
+                return new Dictionary<string, object>() 
+                {
+                    {"data", cachedResponse }
+                };
+            }
+
             var result = await _executor.ExecuteAsync(_ =>
             {                
                 _.Query = query;
                 _.OperationName = operationName;
                 _.Inputs = variables;
                 _.CancellationToken = cancellationToken;
+                _.FieldMiddleware = _fieldMiddlewareBuilder;
             }, root);
 
             var dictionary = new Dictionary<string, object>();
@@ -117,10 +177,15 @@ namespace GraphqlController.AspNetCore
                 Extensions = error.DataAsDictionary
             });
 
+            if(result.Errors == null)
+            {
+                await _cacheInAppService.CacheResponseAsync(query, operationName, variables, result.Data, cancellationToken);
+            }
+
             return dictionary;
         }
 
-        Type GetRoot()
+        System.Type GetRoot()
         {
             return _schemaRouteService.GetType(ControllerContext.HttpContext.Request.Path.Value);            
         }

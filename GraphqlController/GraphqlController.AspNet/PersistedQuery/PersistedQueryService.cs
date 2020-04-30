@@ -39,7 +39,7 @@ namespace GraphqlController.AspNetCore.Services
             }
 
             // Validate hash
-            if (request.Extensions.PersistedQuery.Sha256Hash != GetSha256Hash(request.Query))
+            if (request.Extensions.PersistedQuery.Sha256Hash != Helpers.GetSha256Hash(request.Query))
             {
                 return RegisterPersistedQueryResult.PersistedQueryNotSupported;
             }
@@ -54,22 +54,6 @@ namespace GraphqlController.AspNetCore.Services
         {
             var query = await _persistedQueryManager.TryGetPersistedQuery(sha256, cancellationToken);
             return query;
-        }
-
-        private static string GetSha256Hash(string value)
-        {
-            StringBuilder Sb = new StringBuilder();
-
-            using (var hash = SHA256.Create())
-            {
-                Encoding enc = Encoding.UTF8;
-                Byte[] result = hash.ComputeHash(enc.GetBytes(value));
-
-                foreach (Byte b in result)
-                    Sb.Append(b.ToString("x2"));
-            }
-
-            return Sb.ToString();
         }
 
     }

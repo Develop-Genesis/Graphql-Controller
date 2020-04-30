@@ -11,13 +11,15 @@ namespace GraphqlController.AspNetCore.PersistedQuery
     {
         IDistributedCache _distributeCache;
 
+        const string CachePrefix = "PersistedQuery_";
+
         public DistributedPersistedQueryCache(IDistributedCache distributeCache)
         {
             _distributeCache = distributeCache;
         }
 
         public Task AddPersistedQueryAsync(string hash, string query, CancellationToken cancellationToken)
-          => _distributeCache.SetAsync(hash, Encoding.UTF8.GetBytes(query), cancellationToken);
+          => _distributeCache.SetAsync( CachePrefix + hash, Encoding.UTF8.GetBytes(query), cancellationToken);
         
 
         public Task<bool> IsSupportedAsync(CancellationToken cancellationToken)
@@ -29,7 +31,7 @@ namespace GraphqlController.AspNetCore.PersistedQuery
         {
             try
             {
-                var bytes = await _distributeCache.GetAsync(hash, cancellationToken);
+                var bytes = await _distributeCache.GetAsync( CachePrefix + hash, cancellationToken);
                 if(bytes == null || bytes.Length == 0)
                 {
                     return null;

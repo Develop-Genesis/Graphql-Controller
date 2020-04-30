@@ -11,6 +11,8 @@ namespace GraphqlController.AspNetCore.PersistedQuery
     {
         IMemoryCache _memoryCache;
 
+        const string CachePrefix = "PersistedQuery_";
+
         public InMemoryPersistedQueryCache(IMemoryCache memoryCache)
         {
             _memoryCache = memoryCache;
@@ -18,7 +20,7 @@ namespace GraphqlController.AspNetCore.PersistedQuery
 
         public Task AddPersistedQueryAsync(string hash, string query, CancellationToken cancellationToken)
         {
-            _memoryCache.Set(hash, query);            
+            _memoryCache.Set(CachePrefix + hash, query);            
             return Task.CompletedTask;
         }
 
@@ -30,7 +32,7 @@ namespace GraphqlController.AspNetCore.PersistedQuery
         public Task<string> TryGetPersistedQuery(string hash, CancellationToken cancellationToken)
         {
             string value;
-            if(_memoryCache.TryGetValue(hash, out value))
+            if(_memoryCache.TryGetValue(CachePrefix + hash, out value))
             {
                 return Task.FromResult(value);
             }

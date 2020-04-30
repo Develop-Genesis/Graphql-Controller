@@ -90,7 +90,8 @@ namespace GraphqlController.Helpers
 
         // check final result
         internal static object GetFinalValue(object result)
-            => typeof(IUnionGraphType).IsAssignableFrom(result.GetType())
+            => result == null ? null :
+               typeof(IUnionGraphType).IsAssignableFrom(result.GetType())
                ? (result as IUnionGraphType).Value
                : result;
 

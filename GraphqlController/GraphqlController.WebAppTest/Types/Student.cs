@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GraphqlController.AspNetCore.Cache;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace GraphqlController.WebAppTest.Types
 {
     /// <summary>
     /// An student of the school
-    /// </summary>
+    /// </summary>    
     public class Student : INode, IPerson
     {
         public string Id { get; set; }
