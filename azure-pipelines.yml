@@ -35,16 +35,14 @@ jobs:
   - job: build
     timeoutInMinutes: 10
     # when is from a pull request
-    condition: eq(variables['Build.Reason'], 'PullRequest')
-    pool: 'ubuntu-16.04'
+    condition: eq(variables['Build.Reason'], 'PullRequest')    
     steps:
       - template: build-pipeline.yml
 
   - job: buildAndDeploy
     timeoutInMinutes: 10
     # when is not from a pull request
-    condition: ne(variables['Build.Reason'], 'PullRequest')
-    pool: 'ubuntu-16.04'
+    condition: ne(variables['Build.Reason'], 'PullRequest')   
     steps:
       - template:  build-pipeline.yml
       
