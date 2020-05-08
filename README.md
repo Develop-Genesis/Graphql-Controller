@@ -3,6 +3,10 @@
 
 ![Build](https://dev.azure.com/DevelopGenesis/GraphqlController/_apis/build/status/aleGuardiola.Graphql-Controller?branchName=master)
 
+![NuGetOrg](https://img.shields.io/nuget/v/GraphqlController)
+
+![NuGetOrgPre](https://img.shields.io/nuget/vpre/GraphqlController)
+
 A graphql library that integrates nice with .net 
 
 # Inspiration
