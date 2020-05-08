@@ -31,9 +31,8 @@ steps:
 
 # run GitVersion
 - script:  ./dotnet-gitversion /output buildserver
+  displayName: 'Run GitVersion'
 
-
-
-# # create nuget packages
-# - script: dotnet pack $(GraphControllerProjectDirectory) --no-build
-# - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) --no-build
+# create nuget packages
+- script: dotnet pack $(GraphControllerProjectDirectory) --no-build
+- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) --no-build
