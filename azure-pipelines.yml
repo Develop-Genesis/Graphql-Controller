@@ -17,4 +17,7 @@ steps:
 
 # build projects
 - script: dotnet build $(solutionDirectory) --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+  displayName: 'dotnet build $(solutionDirectory) --configuration $(buildConfiguration)'
+
+# run tests
+- script: dotnet test $(solutionDirectory)
