@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Primitives;
 using System.Linq;
 using GraphQL;
+using System.Net;
+using Microsoft.AspNetCore.Http;
 
 namespace GraphqlController.AspNetCore.Cache
 {
@@ -68,6 +70,11 @@ namespace GraphqlController.AspNetCore.Cache
             }
 
             var httpContext = executionContext.ExecutionData.GetHttpContext();
+            if(httpContext.Request.Method != HttpMethods.Get)
+            {
+                return;
+            }
+
             if (_cacheConfiguration.UseHttpCaching)
             {
                 var maxAge = _cachePolicy.CalculateMaxAge();

@@ -847,10 +847,7 @@ For the cache to work we have to added in our services
 In your Startup.cs in ConfigureServices add:
 ```csharp
 
-    services.AddGraphQlEndpoint()
-            // Important!! This middleware must be the last one registerd
-            // That means if you register another middleware like
-            // .UsePersistedQuery() this one must go after.
+    services.AddGraphQlEndpoint()            
             .AddGraphqlCache(new CacheConfiguration()
             {
                 // Default max age in seconds if no cache control
@@ -875,8 +872,23 @@ In your Startup.cs in ConfigureServices add:
                 // if you want to save bandwidth. The browser will include
                 // the hash and if the hash is equal to the response hash
                 // the server will send a status code of 304(Not Modified).
+                // Only for GET requests
                 IncludeETag = true
             });
+```
+
+
+In your Startup.cs in Configure add:
+```csharp
+
+   app.UseGraphQLController()
+          // specify for what root you want the middleware
+          .UseGraphQlExecutionFor<Root>()
+          // Important!! This middleware must be the last one registerd
+          // That means if you register another middleware like
+          // .UsePersistedQuery() this one must go after.
+                .UseCache();
+
 ```
 
 
