@@ -18,11 +18,3 @@ steps:
 # run tests
 - script: dotnet test $(solutionDirectory) --configuration $(buildConfiguration)
   displayName: 'Run Tests'
-
-# collect code coverage
-- script: dotnet test $(solutionDirectory)/GraphqlController.UnitTest/GraphqlController.UnitTest.csproj --configuration $(buildConfiguration) --logger trx --collect "Code coverage"
-- task: PublishTestResults@2
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
-  displayName: 'Collect code coverage'
