@@ -16,5 +16,9 @@ steps:
   displayName: 'Build Projects'
 
 # run tests
-- script: dotnet test $(solutionDirectory)
+- script: dotnet test $(solutionDirectory) --configuration $(buildConfiguration)
   displayName: 'Run Tests'
+
+# collect code coverage
+- script: dotnet test $(solutionDirectory)/GraphqlController.UnitTest/GraphqlController.UnitTest.csproj --configuration $(buildConfiguration) --logger trx --collect "Code coverage"
+  displayName: 'Collect code coverage'
