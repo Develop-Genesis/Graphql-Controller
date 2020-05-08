@@ -28,7 +28,7 @@ steps:
 
 
 # build projects
-- script: dotnet build $(solutionDirectory) --configuration $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion)
+- script: dotnet build $(solutionDirectory) --configuration $(buildConfiguration) -p:VersionPrefix=$(GitVersion.NugetVersion)
   displayName: 'Build Projects'
 
 # run tests
