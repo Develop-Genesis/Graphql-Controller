@@ -1,7 +1,9 @@
+
 # Graphql-Controller
+
+![Build](https://dev.azure.com/DevelopGenesis/GraphqlController/_apis/build/status/aleGuardiola.Graphql-Controller?branchName=master)
+
 A graphql library that integrates nice with .net 
-
-
 
 # Inspiration
 Graphql is the strong typed protocol to pass data, that is the way I see it so my goal
