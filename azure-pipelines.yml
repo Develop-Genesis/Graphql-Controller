@@ -37,4 +37,9 @@ steps:
 
 # create nuget packages
 - script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) --no-build
+  displayName: 'Create Nuget for GraphqlController'
+
 - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) --no-build
+  displayName: 'Create Nuget for GraphqlController.AspNetCore'
+
+# publish nuget packages
