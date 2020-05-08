@@ -12,6 +12,8 @@ pool:
 variables:
   buildConfiguration: 'Release'
   solutionDirectory: 'GraphqlController'
+  GraphControllerProjectDirectory: '$(solutionDirectory)/GraphqlController'
+  GraphControllerAspNetCoreProjectDirectory: '$(solutionDirectory)/GraphqlController.AspNet'
 
 steps:
 
@@ -22,3 +24,7 @@ steps:
 # run tests
 - script: dotnet test $(solutionDirectory)
   displayName: 'Run Tests'
+
+# create nuget packages
+- script: dotnet pack $(GraphControllerProjectDirectory) --no-build
+- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) --no-build
