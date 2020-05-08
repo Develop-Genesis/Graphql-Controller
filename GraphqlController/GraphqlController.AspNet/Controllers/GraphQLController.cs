@@ -17,18 +17,15 @@ namespace GraphqlController.AspNetCore
     {
         ISchemaRouteService _schemaRouteService;
         IGraphQLExecutor _executor;
-        IFieldMiddlewareBuilder _fieldMiddlewareBuilder;
         IExecutionBuilderResolver _executionBuilderResolver;
 
         public GraphQLController(
             IGraphQLExecutor executor,
-            ISchemaRouteService schemaRouteService,
-            IFieldMiddlewareBuilder fieldMiddlewareBuilder,
+            ISchemaRouteService schemaRouteService,            
             IExecutionBuilderResolver executionBuilderResolver)
         {
             _executor = executor;
             _schemaRouteService = schemaRouteService;
-            _fieldMiddlewareBuilder = fieldMiddlewareBuilder;
             _executionBuilderResolver = executionBuilderResolver;
         }
                 

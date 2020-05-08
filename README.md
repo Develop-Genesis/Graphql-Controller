@@ -89,6 +89,10 @@ As last step we have to declare what the path for this api should be,
 in our Startup.cs class:
 
 ```csharp
+  
+  // use GraphqlController
+  app.UseGraphQLController();
+
   app.UseEndpoints(endpoints =>
   {     
      // Include this line to declare that the root with type Root
@@ -728,16 +732,19 @@ In your Startup.cs in ConfigureServices add:
 
     services.AddGraphQlEndpoint()
     // add in memory persisted query support
+            .AddPersistedQuery()
             .AddInMemoryPersistedQuery();
 
 ```
 
-## Cache
-
-To add cache to the resources that don't change frecuently you have to use the CacheAttribute
-and specifing the max age in second that the resource will can be cached.
-
+In your Startup.cs in Configure add:
 ```csharp
+
+   app.UseGraphQLController()
+          // specify for what root you want the middleware
+          .UseGraphQlExecutionFor<Root>()
+          // add persisted query execution middleware
+                .UsePersistedQuery(); 
 
 ```
 
@@ -772,6 +779,106 @@ In your Startup.cs in ConfigureServices add:
     // add distributed persisted query support
             .AddDistributedPersistedQuery();
 ```
+
+and dont forget to add the middleware as explained in In Memory Persisted queries
+
+## Cache
+
+You can cache resources that does not change frequently, this is very useful because
+the server does not need to recompute the values or get it from the database
+every time a client request it.
+
+GraphqlController.AspNetCore has support for caching with the CacheControlAttribute. 
+You can use CacheControlAttribute on a Type or a field to indicate the time in seconds
+that the specific resource will be cached.
+
+```csharp
+
+    // Student will be cached for 60 seconds
+    [CacheControl(60)]
+    public class Student : IPerson
+    {
+        public string Name { get; set; }
+        public string LastName { get; set; }
+        public int Grades { get; set; }
+    }
+    
+```
+
+```csharp
+
+    // The field allStudents will be cached for 10 seconds.
+    // When you use it on a field it will override any Cache that the
+    // type has, this means that the 60 seconds on the type Student
+    // will be overrided to 10
+    [CacheControl(10)]
+    public IEnumerable<Student> AllStudents([NonNull]int skip, [NonNull]int take)
+    {
+        return new List<Student>()
+        {
+            new Student()
+            {
+                Name => "Jhon",
+                LastName => "Robinson",
+                Grades => 80
+            },
+            new Student()
+            {
+                Name => "Jhonatan",
+                LastName => "Cruz",
+                Grades => 60
+            },
+            new Student()
+            {
+                Name => "Rubio",
+                LastName => "Acosta",
+                Grades => 30
+            },
+        }.Skip(skip).Take(take);
+    }
+
+```
+
+After the query is executed the cache time in second will be computed for
+that execution. The current cache policy takes the lowest value.
+
+For the cache to work we have to added in our services
+
+In your Startup.cs in ConfigureServices add:
+```csharp
+
+    services.AddGraphQlEndpoint()
+            // Important!! This middleware must be the last one registerd
+            // That means if you register another middleware like
+            // .UsePersistedQuery() this one must go after.
+            .AddGraphqlCache(new CacheConfiguration()
+            {
+                // Default max age in seconds if no cache control
+                // can be found the default value is 0
+                DefaultMaxAge = 5,
+                // Set this option if you want to cache the responses
+                // using the server cache, the options are Distributed,
+                // Memory or None by default. If you want to use other different
+                // than none make sure you have the correspondent cache service
+                // as explained in persisted queries.
+                ResponseCache = ResponseCacheType.Distributed,
+                // When this property is set to true the cache control
+                // headers will be included if the request is served
+                // via HTTP GET. This is very useful because browsers
+                // can cache the responses and not even have to ask 
+                // the server. If you use the Apollo Client this is a 
+                // good combination with persisted queries forced to GEET
+                // only. The default value is false.
+                UseHttpCaching = true,
+                // When this property is set to true the eEtag header
+                // will be computed in the response, this is ver useful
+                // if you want to save bandwidth. The browser will include
+                // the hash and if the hash is equal to the response hash
+                // the server will send a status code of 304(Not Modified).
+                IncludeETag = true
+            });
+```
+
 
 #### Progress
 This library is still in development and has not be tested in production
