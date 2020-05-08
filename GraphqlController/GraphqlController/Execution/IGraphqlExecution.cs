@@ -8,6 +8,6 @@ namespace GraphqlController.Execution
 {
     public interface IGraphqlExecution
     {
-        Task<ExecutionResult> ExecuteAsync();
+        Task<GraphqlControllerExecutionResult> ExecuteAsync();
     }
 }

@@ -12,6 +12,7 @@ namespace GraphqlController.Execution
         IGraphqlExecution BuildExecution(
             GraphQlRequest request, 
             DocumentExecuterMidleware documentExecuterMidleware, 
+            IExecutionDataDictionary data,
             IServiceProvider serviceProvider, 
             CancellationToken cancellationToken);
 

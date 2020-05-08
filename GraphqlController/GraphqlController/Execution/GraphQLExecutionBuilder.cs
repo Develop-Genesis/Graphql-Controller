@@ -17,10 +17,11 @@ namespace GraphqlController.Execution
         public IGraphqlExecution BuildExecution(
             GraphQlRequest request, 
             DocumentExecuterMidleware documentExecuterMidleware, 
+            IExecutionDataDictionary data,
             IServiceProvider serviceProvider, 
             CancellationToken cancellationToken)
         {
-            var context = new ExecutionContext(request, cancellationToken);
+            var context = new ExecutionContext(request, data, cancellationToken);
 
             var midlewares = _midlewares.Select(x =>
             {
@@ -59,7 +60,7 @@ namespace GraphqlController.Execution
             _middlewares = middlewares;
         }
 
-        public async Task<ExecutionResult> ExecuteAsync()
+        public async Task<GraphqlControllerExecutionResult> ExecuteAsync()
         {
             var enumerator = _middlewares.GetEnumerator();
 
@@ -68,7 +69,7 @@ namespace GraphqlController.Execution
 
             await first.ExecuteAsync(_context, new Func<Task>(()=>Next(enumerator)));
 
-            return _context.Result;
+            return new GraphqlControllerExecutionResult(_context.Result, _context.ExecutionData);
         }
 
         private async Task Next(IEnumerator<IExecutionMiddleware> enumerator)

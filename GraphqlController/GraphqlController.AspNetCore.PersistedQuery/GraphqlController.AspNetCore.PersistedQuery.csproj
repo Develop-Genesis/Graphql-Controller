@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GraphqlController.AspNet\GraphqlController.AspNetCore.csproj" />
+    <ProjectReference Include="..\GraphqlController\GraphqlController.csproj" />
+  </ItemGroup>
+
+</Project>

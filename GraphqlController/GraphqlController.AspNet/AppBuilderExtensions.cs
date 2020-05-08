@@ -1,5 +1,5 @@
-﻿using GraphQL.Instrumentation;
-using GraphqlController.AspNetCore.Cache;
+﻿using GraphqlController.AspNetCore.Services;
+using GraphqlController.Execution;
 using GraphqlController.Services;
 using Microsoft.AspNetCore.Builder;
 using System;
@@ -15,18 +15,17 @@ namespace GraphqlController.AspNetCore
             var schemaResolver = (ISchemaResolver)app.ApplicationServices.GetService(typeof(ISchemaResolver));
             schemaResolver.BuildSchemas();
 
-            // add cache field middleware
-            app.WithGraphqlFieldMiddleware()
-                .Use<CacheFieldMiddleware>();
-
             return app;
         }
 
-        public static IFieldMiddlewareBuilder WithGraphqlFieldMiddleware(this IApplicationBuilder app)
+        public static IGraphQLExecutionBuilder UseGraphQlExecutionFor(this IApplicationBuilder app, Type root)
         {
-            var builder = (IFieldMiddlewareBuilder)app.ApplicationServices.GetService(typeof(IFieldMiddlewareBuilder));
-            return builder;
+            var executionBuilderResolver = (IExecutionBuilderResolver)app.ApplicationServices.GetService(typeof(IExecutionBuilderResolver));
+            return executionBuilderResolver.GetGraphqlExecutionBuilder(root);
         }
+
+        public static IGraphQLExecutionBuilder UseGraphQlExecutionFor<T>(this IApplicationBuilder app)
+            => app.UseGraphQlExecutionFor(typeof(T));
 
     }
 }

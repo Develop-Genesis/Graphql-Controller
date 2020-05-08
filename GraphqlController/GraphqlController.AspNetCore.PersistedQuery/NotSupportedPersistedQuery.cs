@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.AspNetCore.PersistedQuery
 {
-    public class NotSupportedPersistedQuery : IPersistedQueryCahce
+    public class NotSupportedPersistedQuery : IPersistedQueryCache
     {
         public Task AddPersistedQueryAsync(string hash, string query, CancellationToken cancellationToken)
         {

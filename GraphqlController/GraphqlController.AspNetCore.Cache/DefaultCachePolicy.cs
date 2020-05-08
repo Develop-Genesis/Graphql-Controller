@@ -21,7 +21,7 @@ namespace GraphqlController.AspNetCore.Cache
         {
             if(payload.MaxAge == -1)
             {
-                // ignore uknow cache
+                // ignore unknow cache
                 return;
             }
 

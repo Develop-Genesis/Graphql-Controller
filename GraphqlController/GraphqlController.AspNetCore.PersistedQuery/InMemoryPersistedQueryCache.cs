@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.AspNetCore.PersistedQuery
 {
-    public class InMemoryPersistedQueryCache : IPersistedQueryCahce
+    public class InMemoryPersistedQueryCache : IPersistedQueryCache
     {
         IMemoryCache _memoryCache;
 

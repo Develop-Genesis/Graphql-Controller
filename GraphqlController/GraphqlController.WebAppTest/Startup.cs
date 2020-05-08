@@ -9,6 +9,7 @@ using GraphqlController.WebAppTest.Repositories;
 using GraphqlController.AspNetCore;
 using GraphqlController.WebAppTest.Types;
 using GraphqlController.AspNetCore.Cache;
+using GraphqlController.AspNetCore.PersistedQuery;
 
 namespace GraphqlController.WebAppTest
 {
@@ -26,18 +27,22 @@ namespace GraphqlController.WebAppTest
         {
             services.AddControllers();
 
+            services.AddDistributedMemoryCache();
+
             services.AddGraphQlController()
                     .AddCurrentAssembly();
 
-            services.AddDistributedMemoryCache();
+            services.AddGraphQlEndpoint()                    
+                    .AddGraphqlCache(new CacheConfiguration()
+                    {
+                        DefaultMaxAge = 5,
+                        ResponseCache = ResponseCacheType.Distributed,
+                        UseHttpCaching = true,
+                        IncludeETag = true
+                    });
 
-            services.AddGraphQlEndpoint(new CacheConfiguration() 
-            { 
-                DefaultMaxAge = 5, 
-                ResponseCache = ResponseCacheType.Distributed,
-                UseHttpCaching = true,
-                IncludeETag = true
-            }).AddDistributedPersistedQuery();
+            services.AddPersistedQuery()
+                    .AddDistributedPersistedQuery();
 
             services.AddScoped<TeacherRepository>();
         }
@@ -59,7 +64,10 @@ namespace GraphqlController.WebAppTest
                         
             app.UseAuthorization();
 
-            app.UseGraphQLController();
+            app.UseGraphQLController()
+               .UseGraphQlExecutionFor<Root>()
+               .UsePersistedQuery()
+               .UseCache();
 
             app.UseEndpoints(endpoints =>
             {

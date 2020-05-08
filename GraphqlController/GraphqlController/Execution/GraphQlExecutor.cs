@@ -32,7 +32,8 @@ namespace GraphqlController.Execution
             });
         }
 
-        public Task<ExecutionResult> ExecuteAsync(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, Type rootType, CancellationToken cancellationToken)
+        public Task<GraphqlControllerExecutionResult> 
+            ExecuteAsync(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, Type rootType, ExecutionDataDictionary data, CancellationToken cancellationToken)
         {
             var schema = _schemaResolver.GetSchema(rootType);
 
@@ -40,12 +41,13 @@ namespace GraphqlController.Execution
 
             var documentExecuterMiddleware = new DocumentExecuterMidleware(schema, serviceProvider);
 
-            var execution = executionBuilder.BuildExecution(request, documentExecuterMiddleware, serviceProvider, cancellationToken);
+            var execution = executionBuilder.BuildExecution(request, documentExecuterMiddleware, data, serviceProvider, cancellationToken);
 
             return execution.ExecuteAsync();
         }
 
-        public Task<ExecutionResult> ExecuteAsync<T>(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, CancellationToken cancellationToken)
-           => ExecuteAsync(executionBuilder, request, typeof(T), cancellationToken);
+        public Task<GraphqlControllerExecutionResult> ExecuteAsync<T>
+            (IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, ExecutionDataDictionary data, CancellationToken cancellationToken)
+           => ExecuteAsync(executionBuilder, request, typeof(T), data, cancellationToken);
     }
 }

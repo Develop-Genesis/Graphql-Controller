@@ -9,7 +9,7 @@ namespace GraphqlController.Execution
 {
     public interface IGraphQLExecutor
     {
-        Task<ExecutionResult> ExecuteAsync(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, Type rootType, CancellationToken cancellationToken);
-        Task<ExecutionResult> ExecuteAsync<T>(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, CancellationToken cancellationToken);
+        Task<GraphqlControllerExecutionResult> ExecuteAsync(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, Type rootType, ExecutionDataDictionary data, CancellationToken cancellationToken);
+        Task<GraphqlControllerExecutionResult> ExecuteAsync<T>(IGraphQLExecutionBuilder executionBuilder, GraphQlRequest request, ExecutionDataDictionary data, CancellationToken cancellationToken);
     }
 }

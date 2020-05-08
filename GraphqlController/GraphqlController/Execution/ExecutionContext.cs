@@ -12,12 +12,13 @@ namespace GraphqlController.Execution
 {
     public class ExecutionContext
     {
-        public ExecutionContext(GraphQlRequest request, CancellationToken cancellationToken)
+        public ExecutionContext(GraphQlRequest request, IExecutionDataDictionary data, CancellationToken cancellationToken)
         {
             Request = request;
             Result = null;
             FieldMiddleware = new FieldMiddlewareBuilder();
             ValidationRules = new List<IValidationRule>();
+            ExecutionData = data;
             CancellationToken = cancellationToken;
             UserContext = new Dictionary<string, object>();
             Listeners = new List<IDocumentExecutionListener>();
@@ -32,7 +33,7 @@ namespace GraphqlController.Execution
         public GraphQlRequest Request { get; }
 
         public ExecutionResult Result { get; set; }
-
+         
         public IFieldMiddlewareBuilder FieldMiddleware { get; }
 
         public IList<IValidationRule> ValidationRules { get; }
@@ -40,6 +41,8 @@ namespace GraphqlController.Execution
         public CancellationToken CancellationToken { get; }
 
         public IDictionary<string, object> UserContext { get; }
+
+        public IExecutionDataDictionary ExecutionData { get; }
 
         public IList<IDocumentExecutionListener> Listeners { get; }
 

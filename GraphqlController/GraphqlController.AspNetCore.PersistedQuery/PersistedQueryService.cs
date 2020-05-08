@@ -1,4 +1,6 @@
 ﻿using GraphQL.Conversion;
+using GraphqlController.Execution;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
@@ -10,9 +12,9 @@ namespace GraphqlController.AspNetCore.Services
 {
     public class PersistedQueryService : IPersistedQueryService
     {
-        IPersistedQueryCahce _persistedQueryManager;
+        IPersistedQueryCache _persistedQueryManager;
 
-        public PersistedQueryService(IPersistedQueryCahce persistedQueryManager)
+        public PersistedQueryService(IPersistedQueryCache persistedQueryManager)
         {
             _persistedQueryManager = persistedQueryManager;
         }
@@ -27,8 +29,8 @@ namespace GraphqlController.AspNetCore.Services
                 }
                 return RegisterPersistedQueryResult.NoQueryToRegister;
             }
-
-            if (request.Extensions?.PersistedQuery == null)
+                        
+            if (request.Extensions?.GetValue("persistedQuery") == null)
             {
                 return RegisterPersistedQueryResult.NoPersistedQuery;
             }
@@ -39,12 +41,12 @@ namespace GraphqlController.AspNetCore.Services
             }
 
             // Validate hash
-            if (request.Extensions.PersistedQuery.Sha256Hash != Helpers.GetSha256Hash(request.Query))
+            if ((string)request.Extensions["persistedQuery"]["sha256Hash"] != Helpers.GetSha256Hash(request.Query))
             {
                 return RegisterPersistedQueryResult.PersistedQueryNotSupported;
             }
 
-            await _persistedQueryManager.AddPersistedQueryAsync(request.Extensions.PersistedQuery.Sha256Hash, request.Query, cancellationToken);
+            await _persistedQueryManager.AddPersistedQueryAsync((string)request.Extensions["persistedQuery"]["sha256Hash"], request.Query, cancellationToken);
 
             return RegisterPersistedQueryResult.QueryRegistered;
         }

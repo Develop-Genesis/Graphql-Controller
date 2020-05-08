@@ -15,7 +15,7 @@ namespace GraphqlController.AspNetCore
         public static void MapGraphQLEnpoint(this IEndpointRouteBuilder endpoints, string path, Type rootType)
         {
             var schemaRoutes = (ISchemaRouteService)endpoints.ServiceProvider.GetService(typeof(ISchemaRouteService));
-
+            
             schemaRoutes.AddRoute(path, rootType);
 
             endpoints.MapControllerRoute(
