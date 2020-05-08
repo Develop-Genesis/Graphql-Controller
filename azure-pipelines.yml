@@ -3,10 +3,22 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+      - develop
+      - releases/*
+
 trigger:
-- master
-- develop
-- releases/*
+  branches:
+    include:  
+      - master
+      - develop
+      - releases/*
+  
+    
 
 pool:
   vmImage: 'ubuntu-latest'
