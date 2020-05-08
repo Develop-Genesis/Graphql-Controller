@@ -11,11 +11,9 @@ pool:
 
 variables:
   buildConfiguration: 'Release'
+  solutionDirectory: 'GraphqlController'
 
 steps:
-
-# go to the solution directory
-- powershell: cd GraphqlController
 
 # build projects
 - script: dotnet build --configuration $(buildConfiguration)
