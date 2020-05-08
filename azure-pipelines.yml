@@ -4,9 +4,18 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- master
-- develop
-- releases/*
+  branches:
+    include:  
+      - master
+      - develop
+      - releases/*
+  pr:
+    autoCancel: true
+    branches:
+      - master
+      - develop
+      - releases/*
+    
 
 pool:
   vmImage: 'ubuntu-latest'
