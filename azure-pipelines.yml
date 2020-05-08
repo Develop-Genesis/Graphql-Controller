@@ -28,7 +28,7 @@ steps:
 
 
 # build projects
-- script: dotnet build $(solutionDirectory) --configuration $(buildConfiguration) -p:VersionPrefix=$(GitVersion.NugetVersion)
+- script: dotnet build $(solutionDirectory) --configuration $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion)
   displayName: 'Build Projects'
 
 # run tests
@@ -36,10 +36,10 @@ steps:
   displayName: 'Run Tests'
 
 # create nuget packages
-- script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) -o . --no-build
+- script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
   displayName: 'Create Nuget for GraphqlController'
 
-- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -o . --no-build
+- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
   displayName: 'Create Nuget for GraphqlController.AspNetCore'
 
 # publish nuget packages

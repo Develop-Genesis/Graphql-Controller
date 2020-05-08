@@ -7,7 +7,8 @@
     <Description>A graphql library that integrates nice with .net</Description>
     <PackageProjectUrl>https://github.com/aleGuardiola/Graphql-Controller</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>1.1.0</Version>
+    <RepositoryUrl>https://github.com/aleGuardiola/Graphql-Controller</RepositoryUrl>
+    <PackageTags>graphql</PackageTags>    
   </PropertyGroup>
 
   <ItemGroup>
