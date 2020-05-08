@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GraphqlController.AspNetCore.Services
+namespace GraphqlController.AspNetCore.PersistedQuery
 {
     public interface IPersistedQueryService
     {

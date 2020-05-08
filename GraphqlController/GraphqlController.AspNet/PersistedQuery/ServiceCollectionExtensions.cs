@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GraphqlController.AspNetCore.Cache
+namespace GraphqlController.AspNetCore.PersistedQuery
 {
     public static class ServiceCollectionExtensions
     {
