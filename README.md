@@ -17,9 +17,9 @@ in a way that you feel it natural.
 # Getting Started with Asp.net core
 ##### Install nuget package:
 
-` dotnet add package GraphqlController --version 1.1.0 `
+` dotnet add package GraphqlController --version 2.0.0 `
 
-` dotnet add package GraphqlController.AspNetCore --version 1.1.0 `
+` dotnet add package GraphqlController.AspNetCore --version 2.0.0 `
 
 ##### How to use it
 
