@@ -36,10 +36,16 @@ steps:
   displayName: 'Run Tests'
 
 # create nuget packages
-- script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) --no-build
+- script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) -o . --no-build
   displayName: 'Create Nuget for GraphqlController'
 
-- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) --no-build
+- script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -o . --no-build
   displayName: 'Create Nuget for GraphqlController.AspNetCore'
 
 # publish nuget packages
+- script: dotnet nuget push GraphqlController.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
+  displayName: 'Publish GraphqlController'
+
+- script: dotnet nuget push GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
+  displayName: 'Publish GraphqlController.AspNetCore'
+
