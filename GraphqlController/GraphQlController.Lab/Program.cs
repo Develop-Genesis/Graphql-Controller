@@ -25,17 +25,17 @@ namespace GraphQlController.Lab
 
             var pool = provider.GetService<IGraphQlTypePool>();
 
-            var schema = new Schema { 
-                Query = pool.GetRootGraphType( new Person() ) as IObjectGraphType,
+            //var schema = new Schema { 
+            //    Query = pool.GetRootGraphType( new Person() ) as IObjectGraphType,
                 
-            };
+            //};
 
-            var json = await schema.ExecuteAsync(_ =>
-            {
-                _.Query = "{ name, lastName, motherName(jojoto: null), father { name } }";
-            });
+            //var json = await schema.ExecuteAsync(_ =>
+            //{
+            //    _.Query = "{ name, lastName, motherName(jojoto: null), father { name } }";
+            //});
 
-            Console.WriteLine(json);
+            //Console.WriteLine(json);
 
         }
     }

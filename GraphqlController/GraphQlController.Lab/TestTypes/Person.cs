@@ -1,5 +1,5 @@
 ﻿using GraphqlController;
-using GraphqlController.Arguments;
+using GraphqlController.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -23,6 +23,6 @@ namespace GraphQlController.Lab.TestTypes
         /// The name of the mother
         /// </summary>
         /// <param name="jojoto">Just for testing</param>        
-        public string MotherName([NonNullArgument]string jojoto) => "Hilsy";
+        public string MotherName([NonNull]string jojoto) => "Hilsy";
     }
 }
