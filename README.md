@@ -7,7 +7,7 @@
 
 ![NuGetOrgPre](https://img.shields.io/nuget/vpre/GraphqlController)
 
-![CodeCoverage](https://img.shields.io/azure-devops/coverage/DevelopGenesis/GraphqlController/1/master)
+[comment]: ![CodeCoverage](https://img.shields.io/azure-devops/coverage/DevelopGenesis/GraphqlController/1/master)
 
 A graphql library that integrates nice with .net 
 
