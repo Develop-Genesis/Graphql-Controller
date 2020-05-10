@@ -29,6 +29,9 @@ namespace GraphqlController.Helpers
                     continue;
                 }
 
+                if (param.GetAttribute<InjectAttribute>() != null)
+                    continue;
+
                 var argumentNameAttr = param.GetAttribute<NameAttribute>();
                 var argumentDescriptionAttr = param.GetAttribute<DescriptionAttribute>();
                 var isNonNullType = param.GetAttribute<NonNullAttribute>() != null;
@@ -79,8 +82,28 @@ namespace GraphqlController.Helpers
                     defaultValue = GetDefault(param.ParameterType);
                 }
 
-                var value = c.GetArgument(param.ParameterType, nameAttr == null ? param.Name : nameAttr.Name, defaultValue);
-                parameterValues.Add(value);
+                var posibbleAttributeName = nameAttr == null ? param.Name : nameAttr.Name;
+                if (c.Arguments.ContainsKey(posibbleAttributeName))
+                {
+                    var value = c.GetArgument(param.ParameterType, posibbleAttributeName, defaultValue);
+                    parameterValues.Add(value);
+                }
+                else
+                {
+                    object val;
+                    if(c.UserContext.TryGetValue(param.Name, out val))
+                    {
+                        if (param.ParameterType.IsAssignableFrom(val.GetType()))
+                        {
+                            parameterValues.Add(val);
+                        }
+                    }
+                    else
+                    {
+                        parameterValues.Add(defaultValue);
+                    }
+                }
+                
             }
 
             var resultValue = method.Invoke(GetSourceInstance(c, type, isRoot), parameterValues.ToArray());
