@@ -29,6 +29,9 @@ namespace GraphqlController.Helpers
                     continue;
                 }
 
+                if (param.GetAttribute<InjectAttribute>() != null)
+                    continue;
+
                 var argumentNameAttr = param.GetAttribute<NameAttribute>();
                 var argumentDescriptionAttr = param.GetAttribute<DescriptionAttribute>();
                 var isNonNullType = param.GetAttribute<NonNullAttribute>() != null;
@@ -94,6 +97,10 @@ namespace GraphqlController.Helpers
                         {
                             parameterValues.Add(val);
                         }
+                    }
+                    else
+                    {
+                        parameterValues.Add(defaultValue);
                     }
                 }
                 

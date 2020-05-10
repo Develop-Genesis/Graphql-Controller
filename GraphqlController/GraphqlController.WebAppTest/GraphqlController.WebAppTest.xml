@@ -51,7 +51,7 @@
             All people in the school
             </summary>
         </member>
-        <member name="M:GraphqlController.WebAppTest.Types.Root.TestInput(GraphqlController.WebAppTest.Types.TestInputType,System.String)">
+        <member name="M:GraphqlController.WebAppTest.Types.Root.TestInput(GraphqlController.WebAppTest.Types.TestInputType,System.String,System.IServiceProvider)">
             <summary>
             Testing the input
             </summary>
