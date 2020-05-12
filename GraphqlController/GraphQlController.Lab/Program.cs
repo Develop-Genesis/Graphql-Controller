@@ -22,7 +22,7 @@ namespace GraphQlController.Lab
 
             // create provider
             var provider = services.BuildServiceProvider();
-
+                        
             var pool = provider.GetService<IGraphQlTypePool>();
 
             //var schema = new Schema { 
