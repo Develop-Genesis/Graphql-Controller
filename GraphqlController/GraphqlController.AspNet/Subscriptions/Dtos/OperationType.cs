@@ -23,5 +23,5 @@ namespace GraphqlController.AspNetCore.Subscriptions.Dtos
         public const string GraphqlComplete = "GQL_COMPLETE";
 
         public const string GraphqlConnectionKeepAlive = "GQL_CONNECTION_KEEP_ALIVE";
-    }
-}
+
+        public const string GraphqlConnectionTerminate = "GQL_CONNECTION_TERMINATE";
