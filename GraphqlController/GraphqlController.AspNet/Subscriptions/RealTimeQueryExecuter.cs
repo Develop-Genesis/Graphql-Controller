@@ -26,6 +26,7 @@ namespace GraphqlController.AspNetCore.Subscriptions
             _executionBuilderResolver = executionBuilderResolver;
             _executor = executor;
             _operationId = operationId;
+            _root = root;
         }
 
         public void Execute(GraphQlRequest request, Action<OperationMessage> callback, CancellationToken cancellationToken)
@@ -43,7 +44,7 @@ namespace GraphqlController.AspNetCore.Subscriptions
                    {
                        Id = _operationId,
                        Type = OperationType.GraphqlError,
-                       Payload = new Newtonsoft.Json.Linq.JValue(result.Exception.Message)
+                       Payload = new JValue(result.Exception.Message)
                    });
                   ;
                }
@@ -58,7 +59,7 @@ namespace GraphqlController.AspNetCore.Subscriptions
                         callback(new OperationMessage()
                         {
                             Id = _operationId,
-                            Payload = JToken.FromObject(executionResult.ToResultDictionary()) as JValue,
+                            Payload = JToken.FromObject(executionResult.ToResultDictionary()),
                             Type = OperationType.GraphqlError
                         });
                     }
@@ -70,7 +71,7 @@ namespace GraphqlController.AspNetCore.Subscriptions
                            onNext: (data) => callback(new OperationMessage()
                            {
                                Id = _operationId,
-                               Payload = JToken.FromObject(data.ToResultDictionary()) as JValue,
+                               Payload = JToken.FromObject(data.ToResultDictionary()),
                                Type = OperationType.GraphqlData
                            }),
                            onError: (error) => callback(new OperationMessage()
@@ -94,18 +95,10 @@ namespace GraphqlController.AspNetCore.Subscriptions
                    callback(new OperationMessage()
                    {
                        Id = _operationId,
-                       Payload = JToken.FromObject(dictionary) as JValue,
+                       Payload = JToken.FromObject(dictionary),
                        Type = OperationType.GraphqlData
                    });
-
-                   callback(new OperationMessage()
-                   {
-                       Id = _operationId,
-                       Type = OperationType.GraphqlComplete
-                   });
-
                }
-
            });
 
         }

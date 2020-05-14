@@ -16,12 +16,14 @@ namespace GraphqlController.AspNetCore.Subscriptions.WebSockets
     {
         RequestDelegate _next;
         PathString _path;
-        Type rootType;
+        Type _rootType;
         bool isConnectionInitialized = false;
 
         public WebSocketsMiddleware(RequestDelegate next, PathString path, Type rootType)
         {
             _next = next;
+            _path = path;
+            _rootType = rootType;
         }
 
         public async Task Invoke(HttpContext httpContext, IScopedServiceProviderResolver scopedServiceProviderResolver)
@@ -46,34 +48,41 @@ namespace GraphqlController.AspNetCore.Subscriptions.WebSockets
             }
 
             var serviceProvider = scopedServiceProviderResolver.GetProvider();
-            var realTimeExecutionManager = new RealTimeExecutionManager(serviceProvider, rootType);
-
-            await RunConnectionAsync(realTimeExecutionManager, socket, default);
+            using (var realTimeExecutionManager = new RealTimeExecutionManager(serviceProvider, _rootType))
+            {
+                await RunConnectionAsync(realTimeExecutionManager, socket, default);
+            }                
         }
 
         static async Task RunConnectionAsync(IRealTimeExecutionManager realTimeExecutionManager, WebSocket webSocket, CancellationToken cancellationToken)
         {
             realTimeExecutionManager.NewOperationMessages += async (o, e) => await SendSocketMessageAsync(webSocket, e, default);
 
-            var operationMessage = await GetSocketMessageAsync(webSocket, cancellationToken);
-
-            switch(operationMessage.Type)
+            while(webSocket.State == WebSocketState.Open)
             {
-                case OperationType.GraphqlConnectionInit:
-                    await SendSocketMessageAsync(webSocket, new OperationMessage()
-                    {
-                        Type = OperationType.GraphqlConnectionAck
-                    }, cancellationToken);
-                    break;
+                var operationMessage = await GetSocketMessageAsync(webSocket, cancellationToken);
 
-                case OperationType.GraphqlConnectionTerminate:
-                    await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", default);
-                    return;
+                if (operationMessage == null)
+                    continue;
 
-                default:
-                    realTimeExecutionManager.SendOperationMessage(operationMessage);
-                    break;
-            }
+                switch (operationMessage.Type)
+                {
+                    case OperationType.GraphqlConnectionInit:
+                        await SendSocketMessageAsync(webSocket, new OperationMessage()
+                        {
+                            Type = OperationType.GraphqlConnectionAck
+                        }, cancellationToken);
+                        break;
+
+                    case OperationType.GraphqlConnectionTerminate:
+                        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "", default);
+                        return;
+
+                    default:
+                        realTimeExecutionManager.SendOperationMessage(operationMessage);
+                        break;
+                }
+            }           
 
         }
 
@@ -102,11 +111,13 @@ namespace GraphqlController.AspNetCore.Subscriptions.WebSockets
         static async Task SendSocketMessageAsync(WebSocket socket, OperationMessage message, CancellationToken cancellationToken)
         {
             using(var ms = new MemoryStream())
-            using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8))
+            using (StreamWriter sw = new StreamWriter(ms))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
                 var serializer = new JsonSerializer();
                 serializer.Serialize(writer, message);
+
+                await writer.FlushAsync();
 
                 ms.Seek(0, SeekOrigin.Begin);
 

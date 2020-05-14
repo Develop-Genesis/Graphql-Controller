@@ -79,6 +79,15 @@ namespace GraphqlController.AspNetCore.Subscriptions
 
         void OnNewOperationMessage(OperationMessage message)
              => NewOperationMessages?.Invoke(this, message);
+
+        public void Dispose()
+        {
+            foreach(var operationContext in _activeGraphqlOperations.Values)
+            {
+                operationContext.CancellationTokenSource.Cancel();
+                operationContext.ServiceScope.Dispose();
+            }
+        }
     }
 
     public class OperationContext

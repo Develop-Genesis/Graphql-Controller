@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GraphqlController.AspNetCore.Subscriptions
 {
-    public interface IRealTimeExecutionManager
+    public interface IRealTimeExecutionManager : IDisposable
     {
         void SendOperationMessage(OperationMessage operationMessage);
 

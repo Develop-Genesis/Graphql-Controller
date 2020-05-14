@@ -6,22 +6,24 @@ namespace GraphqlController.AspNetCore.Subscriptions.Dtos
 {
     public static class OperationType
     {
-        public const string GraphqlConnectionInit = "GQL_CONNECTION_INIT";
+        public const string GraphqlConnectionInit = "connection_init";
 
-        public const string GraphqlStart = "GQL_START";
+        public const string GraphqlStart = "start";
 
-        public const string GraphqlStop = "GQL_STOP";
+        public const string GraphqlStop = "stop";
 
-        public const string GraphqlConnectionError = "GQL_CONNECTION_ERROR";
+        public const string GraphqlConnectionError = "connection_error";
 
-        public const string GraphqlConnectionAck = "GQL_CONNECTION_ACK";
+        public const string GraphqlConnectionAck = "connection_ack";
 
-        public const string GraphqlData = "GQL_DATA";
+        public const string GraphqlData = "data";
 
-        public const string GraphqlError = "GQL_ERROR";
+        public const string GraphqlError = "error";
 
-        public const string GraphqlComplete = "GQL_COMPLETE";
+        public const string GraphqlComplete = "complete";
 
-        public const string GraphqlConnectionKeepAlive = "GQL_CONNECTION_KEEP_ALIVE";
+        public const string GraphqlConnectionKeepAlive = "ka";
 
-        public const string GraphqlConnectionTerminate = "GQL_CONNECTION_TERMINATE";
+        public const string GraphqlConnectionTerminate = "connection_terminate";
+    }
+}
