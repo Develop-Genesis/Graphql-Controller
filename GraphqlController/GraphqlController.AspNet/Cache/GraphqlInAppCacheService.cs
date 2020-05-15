@@ -48,7 +48,7 @@ namespace GraphqlController.AspNetCore.Cache
 
         public async Task CacheResponseAsync(string query, string operationName, Inputs variables, object response, CancellationToken cancellationToken)
         {
-            if(_cacheConfiguration.ResponseCache == ResponseCacheType.None)
+            if(_cacheConfiguration.ResponseCache == ResponseCacheType.None || response == null)
             {
                 return;
             }

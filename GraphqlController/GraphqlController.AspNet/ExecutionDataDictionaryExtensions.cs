@@ -8,6 +8,11 @@ namespace GraphqlController.AspNetCore
 {
     public static class ExecutionDataDictionaryExtensions
     {
+        public static bool IsRealtimeRequest(this IExecutionDataDictionary data)
+        {
+            return data.ContainsKey("IsRealtimeRequest");
+        }
+
         public static bool IsHttpRequest(this IExecutionDataDictionary data)
         {
             return data.ContainsKey("IsHttpRequest");

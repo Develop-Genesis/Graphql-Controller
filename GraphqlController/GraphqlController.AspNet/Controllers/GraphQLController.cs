@@ -81,24 +81,7 @@ namespace GraphqlController.AspNetCore
                 { "HttpContext", HttpContext }
             }, cancellationToken);
 
-            var dictionary = new Dictionary<string, object>();
-
-            dictionary["data"] = result.ExecutionResult.Data;
-
-            if(result.ExecutionResult.Errors != null)
-            {
-                dictionary["errors"] = result.ExecutionResult.Errors.Select(error => new GraphQLError()
-                {
-                    Message = error.Message,
-                    Path = error.Path,
-                    Locations = error.Locations?.Select(loc => new ErrorLocation
-                    {
-                        Column = loc.Column,
-                        Line = loc.Line
-                    }),
-                    Extensions = error.DataAsDictionary
-                });
-            }
+            var dictionary = result.ExecutionResult.ToResultDictionary();
 
             return (dictionary, result.ExecutionData);
         }
