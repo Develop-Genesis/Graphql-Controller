@@ -10,7 +10,7 @@ namespace GraphqlController.WebAppTest.Types
     /// An student of the school
     /// </summary>    
     [CacheControl(60)]
-    public class Student : INode, IPerson
+    public class Student
     {
         public string Id { get; set; }
         /// <summary>
