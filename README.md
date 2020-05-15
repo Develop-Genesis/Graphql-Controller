@@ -11,6 +11,9 @@
 
 A graphql library that integrates nice with .net 
 
+![](exampleCode.gif)
+![](exampleResult.gif)
+
 # Inspiration
 Graphql is the strong typed protocol to pass data, that is the way I see it so my goal
 with this project is simple, use the strong typed system of .Net to create your Graphql schema 

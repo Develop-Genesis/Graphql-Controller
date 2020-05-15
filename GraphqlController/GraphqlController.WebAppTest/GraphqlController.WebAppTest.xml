@@ -46,22 +46,9 @@
             The root type
             </summary>
         </member>
-        <member name="M:GraphqlController.WebAppTest.Types.Root.AllPeople">
+        <member name="M:GraphqlController.WebAppTest.Types.Root.AllTeacher(System.Int32,System.Int32)">
             <summary>
             All people in the school
-            </summary>
-        </member>
-        <member name="M:GraphqlController.WebAppTest.Types.Root.TestInput(GraphqlController.WebAppTest.Types.TestInputType,System.String,System.IServiceProvider)">
-            <summary>
-            Testing the input
-            </summary>
-            <param name="param1">Parameter 1</param>
-            <param name="param2">Parameter 2</param>
-            <returns></returns>
-        </member>
-        <member name="T:GraphqlController.WebAppTest.Types.TestInputType">
-            <summary>
-            Test input type
             </summary>
         </member>
         <member name="T:GraphqlController.WebAppTest.Types.Student">
