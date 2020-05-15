@@ -10,6 +10,7 @@ using GraphqlController.AspNetCore;
 using GraphqlController.WebAppTest.Types;
 using GraphqlController.AspNetCore.Cache;
 using GraphqlController.AspNetCore.PersistedQuery;
+using GraphqlController.AspNetCore.Subscriptions.WebSockets;
 
 namespace GraphqlController.WebAppTest
 {
@@ -56,6 +57,8 @@ namespace GraphqlController.WebAppTest
                 app.UseCors(b => b.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
             }
 
+            app.UseWebSockets();
+
             app.UseGraphiQl("/graphi", "/graphql/root");
 
             app.UseHttpsRedirection();
@@ -68,6 +71,8 @@ namespace GraphqlController.WebAppTest
                .UseGraphQlExecutionFor<Root>()
                .UsePersistedQuery()
                .UseCache();
+
+            app.UseGraphqlWebSocketProtocol<Root>("/graphql");
 
             app.UseEndpoints(endpoints =>
             {

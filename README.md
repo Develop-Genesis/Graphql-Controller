@@ -504,6 +504,85 @@ graphql:
 
 ```
 
+
+##### Subscriptions
+
+Similar to mutations to create subscriptions a class or multiple classes
+containing the subscriptions have to have GraphNodeType as base class and
+they have to use the SubscriptionAttribute with the type of the root that 
+the subscriptions belog to. Every subscription have to retirn an IObservable.
+
+```csharp
+   
+   // must have this attribute with the type of the root that 
+   // the subscriptions belog to.
+   [Subscription(tyepof(Root))]
+   public class StudentSubscriptions : GraphNodeType
+   {
+      // return the observable to the subscription
+      // in this example we are just using an array of students
+      // and streamming a value every 2 seconds.
+      public IObservable<Teacher> TeacherAdded() => new IPerson[] {
+
+            new Teacher()
+            {
+                Name = "Alejo",
+                LastName = "Guardiola",
+            },
+            new Teacher()
+            {
+                Name = "AlejoA",
+                LastName = "GuardiolaA",
+            },
+            new Teacher()
+            {
+                Name = "AlejoB",
+                LastName = "GuardiolaB",
+            },
+            new Teacher()
+            {
+                Name = "AlejoC",
+                LastName = "GuardiolaC",
+            },
+            new Teacher()
+            {
+                Name = "AlejoD",
+                LastName = "GuardiolaD",
+            }
+
+        }.ToObservable().Zip(Observable.Interval(TimeSpan.FromSeconds(2)), (x, y) => x);
+      
+   }   
+
+```
+
+graphql:
+```graphql
+    
+    subscription {
+       teacherAdded
+       {
+          name
+       }
+    }
+
+```
+
+To use it in asp.net core in the Configure method in your Startup.cs
+add:
+```csharp
+  app.UseWebSockets();
+  ...
+  // after UseGraphQLController()
+  app.UseGraphqlWebSocketProtocol<Root>("/graphql");
+```
+
+This implementation uses apollo websocket subscription protocol, 
+you can use apollo client learn more here: 
+https://www.apollographql.com/docs/react/data/subscriptions/
+
+SignalR support is comming!!
+
 #### Type description
 
 Thre is two ways to create a description for a type
@@ -907,7 +986,6 @@ In your Startup.cs in Configure add:
 This library is still in development and has not be tested in production
 
 ##### Comming features
-* Subscriptions
 * Support for the graphql net server project
 * Posibly more features to add and bugs to fix
 

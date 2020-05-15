@@ -7,13 +7,25 @@ import ApolloClient, { ApolloLink } from 'apollo-client';
 import { createPersistedQueryLink } from "apollo-link-persisted-queries";
 import { createHttpLink } from 'apollo-link-http';
 import { InMemoryCache } from "apollo-cache-inmemory";
+import { WebSocketLink } from 'apollo-link-ws';
+import { SubscriptionClient } from "subscriptions-transport-ws";
+
+const httpLink = createHttpLink({ uri: "https://localhost:44399/graphql/root" });
+
+const GRAPHQL_ENDPOINT = "wss://localhost:44399/graphql";
+
+const wsclient = new SubscriptionClient(GRAPHQL_ENDPOINT, {
+  //reconnect: true
+});
+
+const wsLink = new WebSocketLink(wsclient);
 
 // use this with Apollo Client
-const link = createPersistedQueryLink({useGETForHashedQueries: true}).concat(createHttpLink({ uri: "https://localhost:44399/graphql/root" }));
+const link = createPersistedQueryLink({useGETForHashedQueries: true}).concat(wsLink);
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   link: link,
-  connectToDevTools: true
+  connectToDevTools: true,  
 });
 
 ReactDOM.render(
