@@ -12,7 +12,7 @@ namespace GraphqlController.WebAppTest.Subscriptions
     [Subscription(typeof(Root))]
     public class SubscriptionTest : GraphNodeType
     {
-        public IObservable<IPerson> AllPersons => new IPerson[] {
+        public IObservable<Teacher> AllPersons => new Teacher[] {
 
             new Teacher()
             {
