@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GraphQL.Types;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,20 +13,15 @@ namespace GraphqlController.Services
         IServiceCollection _services;
 
         AssemblyResolver _assemblyResolver;
+        CustomTypesResolver _customTypesResolver;
 
         internal GraphqlControllerServiceBuilder(IServiceCollection services)
         {
             _services = services;
             _assemblyResolver = new AssemblyResolver();
+            _customTypesResolver = new CustomTypesResolver();
+            services.AddSingleton<ICustomTypesResolver>(_customTypesResolver);
             services.AddSingleton<IAssemblyResolver>(_assemblyResolver);
-        }
-
-        /// <summary>
-        /// Add the assembly where the curreent code is running to find graph types
-        /// </summary>
-        public void AddCurrentAssembly()
-        {
-            AddAssembly(Assembly.GetCallingAssembly());
         }
 
         /// <summary>
@@ -45,6 +41,25 @@ namespace GraphqlController.Services
                 _services.AddTransient(type);
             }
         }
+
+        /// <summary>
+        /// Add a custom type
+        /// </summary>
+        /// <param name="graphType"></param>
+        public void RegisterType(IGraphType graphType)
+            => _customTypesResolver.AddCustomType(graphType);
+
+
+        /// <summary>
+        /// Add the assembly where the curreent code is running to find graph types
+        /// </summary>
+        public GraphqlControllerServiceBuilder AddCurrentAssembly()
+        {
+            AddAssembly(Assembly.GetCallingAssembly());
+            return this;
+        }
+
+
 
     }
 }

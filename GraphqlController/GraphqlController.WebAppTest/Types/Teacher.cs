@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GraphqlController.Attributes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,7 +11,9 @@ namespace GraphqlController.WebAppTest.Types
     /// </summary>
     public class Teacher
     {
+
         public string Id { get; set; }
+
         /// <summary>
         /// Name of the teacher
         /// </summary>
@@ -28,9 +31,12 @@ namespace GraphqlController.WebAppTest.Types
         {
             new Student(),
             new Student(),
-            new Student(), 
+            new Student(),
             new Student()
         };
+
+        [CustomGraphType("CustomType")]
+        public object CustomObject => new {};
 
     }
 }

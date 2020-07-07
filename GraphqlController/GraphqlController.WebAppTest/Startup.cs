@@ -31,7 +31,9 @@ namespace GraphqlController.WebAppTest
             services.AddDistributedMemoryCache();
 
             services.AddGraphQlController()
-                    .AddCurrentAssembly();
+                    .AddCurrentAssembly()
+                    .RegisterType(new CustomType());
+                    
 
             services.AddGraphQlEndpoint()                    
                     .AddGraphqlCache(new CacheConfiguration()

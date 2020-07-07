@@ -64,7 +64,25 @@ namespace GraphqlController.GraphQl
 
             foreach (var property in properties)
             {
-                var graphType = graphTypePool.GetGraphType(property.PropertyType);
+                Type graphTypeAsType = null;
+                IGraphType graphType = null;
+                var customTypeAttr = property.GetAttribute<CustomGraphTypeAttribute>();
+                if(customTypeAttr != null)
+                {
+                    if(customTypeAttr.TypeName != null)
+                    {
+                        graphType = graphTypePool.GetCustomType(customTypeAttr.TypeName);
+                    }
+                    else
+                    {
+                        graphTypeAsType = customTypeAttr.Type;
+                    }
+                }
+                else
+                {
+                    graphType = graphTypePool.GetGraphType(property.PropertyType);
+                }
+                
                 var descriptionAttr = property.GetAttribute<DescriptionAttribute>();
                 var fieldNameAttr = property.GetAttribute<NameAttribute>();
                 var isNonNull = property.GetAttribute<NonNullAttribute>() != null;
@@ -74,7 +92,8 @@ namespace GraphqlController.GraphQl
                 {
                     Name = fieldNameAttr == null ? property.Name : fieldNameAttr.Name,
                     Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(property).Summary,
-                    ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,                    
+                    Type = graphTypeAsType,
+                    ResolvedType = graphType == null ? null : (isNonNull ? new NonNullGraphType(graphType) : graphType),                    
                     Resolver = new FuncFieldResolver<object>(c => GraphQlHelpers.GetFinalValue(property.GetValue(GraphQlHelpers.GetSourceInstance(c, type, isRoot)))),                    
                 };
 
@@ -106,12 +125,33 @@ namespace GraphqlController.GraphQl
                 var descriptionAttr = method.GetAttribute<DescriptionAttribute>();
                 var fieldNameAttr = method.GetAttribute<NameAttribute>();
 
-                IGraphType graphType;
+                Type graphTypeAsType = null;
+                IGraphType graphType = null;
                 IFieldResolver resolver;
+                bool graphTypeResolved = false;
+
+                var customTypeAttr = method.GetAttribute<CustomGraphTypeAttribute>();
+                if (customTypeAttr != null)
+                {
+                    if (customTypeAttr.TypeName != null)
+                    {
+                        graphType = graphTypePool.GetCustomType(customTypeAttr.TypeName);
+                    }
+                    else
+                    {
+                        graphTypeAsType = customTypeAttr.Type;
+                    }
+                    graphTypeResolved = true;
+                }
+
                 if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                 {
-                    var awaitableReturnType = method.ReturnType.GetGenericArguments()[0];
-                    graphType = graphTypePool.GetGraphType(awaitableReturnType);
+                    if(!graphTypeResolved)
+                    {
+                        var awaitableReturnType = method.ReturnType.GetGenericArguments()[0];
+                        graphType = graphTypePool.GetGraphType(awaitableReturnType);
+                    }
+
                     resolver = new AsyncFieldResolver<object>(async c =>
                     {
                         var task = GraphQlHelpers.ExecuteResolverFunction(method, c, type, isRoot);
@@ -125,7 +165,11 @@ namespace GraphqlController.GraphQl
                 }
                 else
                 {
-                    graphType = graphTypePool.GetGraphType(method.ReturnType);
+                    if (!graphTypeResolved)
+                    {
+                        graphType = graphTypePool.GetGraphType(method.ReturnType);
+                    }
+                    
                     resolver = new FuncFieldResolver<object>(c => GraphQlHelpers.ExecuteResolverFunction(method, c, type, isRoot));
                 }
 
@@ -137,7 +181,8 @@ namespace GraphqlController.GraphQl
                     Arguments = GraphQlHelpers.GetArguments(graphTypePool, method),
                     Name = fieldNameAttr == null ? method.Name : fieldNameAttr.Name,
                     Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(method).Summary,
-                    ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
+                    Type = graphTypeAsType,
+                    ResolvedType = graphType == null ? null : (isNonNull ? new NonNullGraphType(graphType) : graphType),
                     Resolver = resolver
                 };
 

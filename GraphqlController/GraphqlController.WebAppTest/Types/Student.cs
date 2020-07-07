@@ -12,7 +12,12 @@ namespace GraphqlController.WebAppTest.Types
     [CacheControl(60)]
     public class Student
     {
+         
+        /// <summary>
+        /// 
+        /// </summary>
         public string Id { get; set; }
+
         /// <summary>
         /// Name of the student
         /// </summary>

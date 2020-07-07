@@ -22,6 +22,8 @@ namespace GraphqlController.GraphQl
 
         IAssemblyResolver _assemblyResolver;
 
+        private Dictionary<string, IGraphType> CustomTypes;
+
         private Dictionary<Type, IGraphType> EnumTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> ObjectTypeMap = new Dictionary<Type, IGraphType>();
         private Dictionary<Type, IGraphType> UnionTypeMap = new Dictionary<Type, IGraphType>();
@@ -40,9 +42,10 @@ namespace GraphqlController.GraphQl
         public IGraphType GetMutationType(IEnumerable<Type> mutationTypes)
            => new DynamicMutationType(this, mutationTypes);
 
-        public GraphQlTypePool(IAssemblyResolver assemblyResolver)
+        public GraphQlTypePool(IAssemblyResolver assemblyResolver, ICustomTypesResolver customTypesResolver)
         {
             _assemblyResolver = assemblyResolver;
+            CustomTypes = customTypesResolver.GetCustomTypes().ToDictionary(x => x.Name);
         }
 
         public IGraphType GetGraphType(Type type)
@@ -203,5 +206,7 @@ namespace GraphqlController.GraphQl
             return InterfaceImplementations[interfaceName];
         }
 
+        public IGraphType GetCustomType(string type)
+         => CustomTypes[type];
     }
 }

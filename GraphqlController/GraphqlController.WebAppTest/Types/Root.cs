@@ -19,7 +19,7 @@ namespace GraphqlController.WebAppTest.Types
         /// <summary>
         /// All people in the school
         /// </summary>
-        public IEnumerable<Teacher> AllTeacher(int skip, int take)
+        public IEnumerable<Teacher> AllTeacher()
         {
             var list = new Teacher[]
             {
@@ -28,8 +28,7 @@ namespace GraphqlController.WebAppTest.Types
                 new Teacher(){ Name = "Landy", LastName = "Acosta" },
                 new Teacher(){ Name = "Rubio", LastName = "Jaime" }
             };
-
-            return list.Skip(skip).Take(take);
+            return list;
         }
 
 

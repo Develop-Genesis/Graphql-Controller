@@ -85,7 +85,7 @@ namespace GraphqlController
                     }
                     else
                     {
-                        if (!typeMark.Contains(resolvedType.Name))
+                        if (resolvedType != null && !typeMark.Contains(resolvedType.Name))
                         {
                             typeMark.Add(resolvedType.Name);
                             yield return resolvedType;

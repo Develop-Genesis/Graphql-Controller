@@ -46,7 +46,7 @@
             The root type
             </summary>
         </member>
-        <member name="M:GraphqlController.WebAppTest.Types.Root.AllTeacher(System.Int32,System.Int32)">
+        <member name="M:GraphqlController.WebAppTest.Types.Root.AllTeacher">
             <summary>
             All people in the school
             </summary>
@@ -55,6 +55,11 @@
             <summary>
             An student of the school
             </summary>    
+        </member>
+        <member name="P:GraphqlController.WebAppTest.Types.Student.Id">
+            <summary>
+            
+            </summary>
         </member>
         <member name="P:GraphqlController.WebAppTest.Types.Student.Name">
             <summary>
