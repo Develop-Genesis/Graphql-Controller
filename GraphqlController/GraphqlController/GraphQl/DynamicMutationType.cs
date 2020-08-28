@@ -31,7 +31,7 @@ namespace GraphqlController.GraphQl
 
                 foreach (var method in methods)
                 {
-                    if (method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
+                   if (method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
                    method.IsSpecialName)
                     {
                         continue;
@@ -40,12 +40,33 @@ namespace GraphqlController.GraphQl
                     var descriptionAttr = method.GetAttribute<DescriptionAttribute>();
                     var fieldNameAttr = method.GetAttribute<NameAttribute>();
 
-                    IGraphType graphType;
+                    Type graphTypeAsType = null;
+                    IGraphType graphType = null;
                     IFieldResolver resolver;
+                    bool graphTypeResolved = false;
+
+                    var customTypeAttr = method.GetAttribute<CustomGraphTypeAttribute>();
+                    if (customTypeAttr != null)
+                    {
+                        if (customTypeAttr.TypeName != null)
+                        {
+                            graphType = graphTypePool.GetCustomType(customTypeAttr.TypeName);
+                        }
+                        else
+                        {
+                            graphTypeAsType = customTypeAttr.Type;
+                        }
+                        graphTypeResolved = true;
+                    }
+
                     if (method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                     {
-                        var awaitableReturnType = method.ReturnType.GetGenericArguments()[0];
-                        graphType = graphTypePool.GetGraphType(awaitableReturnType);
+                        if(!graphTypeResolved)
+                        {
+                            var awaitableReturnType = method.ReturnType.GetGenericArguments()[0];
+                            graphType = graphTypePool.GetGraphType(awaitableReturnType);
+                        }
+
                         resolver = new AsyncFieldResolver<object>(async c =>
                         {
                             var task = GraphQlHelpers.ExecuteResolverFunction(method, c, type, true);
@@ -71,6 +92,7 @@ namespace GraphqlController.GraphQl
                         Arguments = GraphQlHelpers.GetArguments(graphTypePool, method),
                         Name = fieldNameAttr == null ? method.Name : fieldNameAttr.Name,
                         Description = descriptionAttr?.Description ?? DocXmlHelper.DocReader.GetMemberComments(method).Summary,
+                        Type = graphTypeAsType,
                         ResolvedType = isNonNull ? new NonNullGraphType(graphType) : graphType,
                         Resolver = resolver
                     };
