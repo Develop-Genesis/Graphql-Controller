@@ -63,9 +63,9 @@ jobs:
         displayName: 'Create Nuget for GraphqlController.AspNetCore'
 
       # publish nuget packages
-      - script: dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
+      - script: dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k %NUGETORGKEY% -s https://api.nuget.org/v3/index.json
         displayName: 'Publish GraphqlController'
 
-      - script: dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
+      - script: dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k %NUGETORGKEY% -s https://api.nuget.org/v3/index.json
         displayName: 'Publish GraphqlController.AspNetCore'
 
