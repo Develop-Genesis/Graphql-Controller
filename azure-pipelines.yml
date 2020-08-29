@@ -62,10 +62,29 @@ jobs:
       - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
         displayName: 'Create Nuget for GraphqlController.AspNetCore'
 
-      # publish nuget packages
-      - script: dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
-        displayName: 'Publish GraphqlController'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k oy2gje7rzqplk2kmmkoqoahcevj7eicexjdilbvyr55uy4 -s https://api.nuget.org/v3/index.json'
+        env: 
+          NUGET_KEY: $(nugetorgKey)
 
-      - script: dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k $(nugetorgKey) -s https://api.nuget.org/v3/index.json
-        displayName: 'Publish GraphqlController.AspNetCore'
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: 'dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k oy2gje7rzqplk2kmmkoqoahcevj7eicexjdilbvyr55uy4 -s https://api.nuget.org/v3/index.json'
+        env: 
+          NUGET_KEY: $(nugetorgKey)
+
+      # publish nuget packages
+      # - script: dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k %NUGET_KEY% -s https://api.nuget.org/v3/index.json
+      #   displayName: 'Publish GraphqlController'
+      #   env: 
+      #     NUGET_KEY: $(nugetorgKey)
+
+      # - script: dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k %NUGET_KEY%  -s https://api.nuget.org/v3/index.json
+      #   displayName: 'Publish GraphqlController.AspNetCore'
+      #   env: 
+      #     NUGET_KEY: $(nugetorgKey)
+          
 
