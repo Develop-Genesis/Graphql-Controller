@@ -1,4 +1,5 @@
-﻿using GraphqlController.AspNetCore.Services;
+﻿using GraphQL.Types;
+using GraphqlController.AspNetCore.Services;
 using GraphqlController.Execution;
 using GraphqlController.Services;
 using Microsoft.AspNetCore.Builder;
@@ -10,6 +11,14 @@ namespace GraphqlController.AspNetCore
 {
     public static class AppBuilderExtensions
     {
+
+        public static IApplicationBuilder AddSchemaInitializer(this IApplicationBuilder app, Action<Schema> initializer)
+        {
+            var schemaResolver = (ISchemaResolver)app.ApplicationServices.GetService(typeof(ISchemaResolver));
+            schemaResolver.AddIntializer(initializer);
+            return app;
+        }
+
         public static IApplicationBuilder UseGraphQLController(this IApplicationBuilder app)
         {
             var schemaResolver = (ISchemaResolver)app.ApplicationServices.GetService(typeof(ISchemaResolver));
