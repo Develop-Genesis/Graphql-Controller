@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using GraphQL.Types;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,15 @@ namespace GraphqlController.Services
 {
     public class GraphqlControllerServiceBuilder
     {
-        IServiceCollection _services;
+        public IServiceCollection Services { get; }
 
         AssemblyResolver _assemblyResolver;
 
         internal GraphqlControllerServiceBuilder(IServiceCollection services)
         {
-            _services = services;
+            Services = services;
             _assemblyResolver = new AssemblyResolver();
-            services.AddSingleton<IAssemblyResolver>(_assemblyResolver);
+            services.AddSingleton<IAssemblyResolver>(_assemblyResolver);            
         }
 
         /// <summary>
@@ -42,7 +43,7 @@ namespace GraphqlController.Services
 
             foreach (var type in nodeTypes)
             {
-                _services.AddTransient(type);
+                Services.AddTransient(type);
             }
         }
 

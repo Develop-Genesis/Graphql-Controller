@@ -11,9 +11,11 @@ namespace GraphqlController.Services
         Dictionary<Type, DynamicSchema> _rootTypeSchema = new Dictionary<Type, DynamicSchema>();
         IAssemblyResolver _assemblyResolver;
         IGraphQlTypePool _graphQlTypePool;
+        
+        List<Action<Schema>> _intializers = new List<Action<Schema>>();
 
         public SchemaResolver(IAssemblyResolver assemblyResolver, IGraphQlTypePool graphQlTypePool)
-        {           
+        {
             _assemblyResolver = assemblyResolver;
             _graphQlTypePool = graphQlTypePool;
         }
@@ -27,10 +29,14 @@ namespace GraphqlController.Services
                 var mutationTypes = _assemblyResolver.GetMutationTypes(rootType);
                 var subscriptionTypes = _assemblyResolver.GetSubscriptionTypes(rootType);
 
-                var schema = new DynamicSchema(_graphQlTypePool, rootType, mutationTypes, subscriptionTypes);
+                var schema = new DynamicSchema(_graphQlTypePool, rootType, mutationTypes, subscriptionTypes, _intializers);                
                 _rootTypeSchema.Add(rootType, schema);
             }
+        }
 
+        public void AddIntializer(Action<Schema> initializer)
+        {
+            _intializers.Add(initializer);
         }
 
         public ISchema GetSchema(Type rootType)

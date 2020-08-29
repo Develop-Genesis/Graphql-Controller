@@ -9,6 +9,7 @@ namespace GraphqlController.Services
     public interface ISchemaResolver
     {
         public void BuildSchemas();
-        public ISchema GetSchema(Type rootType);       
+        public ISchema GetSchema(Type rootType);
+        void AddIntializer(Action<Schema> initializer);
     }
 }

@@ -20,7 +20,7 @@ namespace GraphqlController.Services
             services.AddScoped<IGraphqlResolver, GraphqlResolver>();
             // add the graphql types pools
             services.AddSingleton<IGraphQlTypePool, GraphQlTypePool>();            
-               
+                        
             // add the schema resolver service
             services.AddSingleton<ISchemaResolver, SchemaResolver>();
 
