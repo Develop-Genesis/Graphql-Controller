@@ -65,14 +65,14 @@ jobs:
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: 'dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k %NUGET_KEY% -s https://api.nuget.org/v3/index.json'
+          script: 'dotnet nuget push ./GraphqlController.$(GitVersion.NugetVersion).nupkg -k oy2gje7rzqplk2kmmkoqoahcevj7eicexjdilbvyr55uy4 -s https://api.nuget.org/v3/index.json'
         env: 
           NUGET_KEY: $(nugetorgKey)
 
       - task: Bash@3
         inputs:
           targetType: 'inline'
-          script: 'dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k %NUGET_KEY%  -s https://api.nuget.org/v3/index.json'
+          script: 'dotnet nuget push ./GraphqlController.AspNetCore.$(GitVersion.NugetVersion).nupkg -k oy2gje7rzqplk2kmmkoqoahcevj7eicexjdilbvyr55uy4  -s https://api.nuget.org/v3/index.json'
         env: 
           NUGET_KEY: $(nugetorgKey)
 
