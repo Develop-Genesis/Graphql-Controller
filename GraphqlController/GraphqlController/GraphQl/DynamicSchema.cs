@@ -10,7 +10,7 @@ namespace GraphqlController.GraphQl
 {
     public class DynamicSchema : Schema
     {
-        public DynamicSchema(IGraphQlTypePool pool, Type query, IEnumerable<Type> mutationTypes, IEnumerable<Type> subscriptionTypes)
+        public DynamicSchema(IGraphQlTypePool pool, Type query, IEnumerable<Type> mutationTypes, IEnumerable<Type> subscriptionTypes, IEnumerable<Action<Schema>> initializers)
         {           
             if(query == null)
             {
@@ -34,6 +34,11 @@ namespace GraphqlController.GraphQl
             {
                 var implementations = pool.GetInterfaceImplementations(intrface.Name);
                 RegisterTypes(implementations.ToArray());
+            }
+
+            foreach(var init in initializers)
+            {
+                init(this);
             }
         }
 
