@@ -13,12 +13,15 @@ namespace GraphqlController.Services
         public IServiceCollection Services { get; }
 
         AssemblyResolver _assemblyResolver;
+        CustomScalarTypesResolver _customScalarTypesResolver;
 
         internal GraphqlControllerServiceBuilder(IServiceCollection services)
         {
             Services = services;
             _assemblyResolver = new AssemblyResolver();
-            services.AddSingleton<IAssemblyResolver>(_assemblyResolver);            
+            _customScalarTypesResolver = new CustomScalarTypesResolver();
+            services.AddSingleton<IAssemblyResolver>(_assemblyResolver);
+            services.AddSingleton<ICustomScalarTypesResolver>(_customScalarTypesResolver);
         }
 
         /// <summary>
@@ -47,5 +50,9 @@ namespace GraphqlController.Services
             }
         }
 
+        public void AddCustomScalarType(Type type, IGraphType graphType)
+        {
+            _customScalarTypesResolver.AddScalarType(type, graphType);
+        }
     }
 }
