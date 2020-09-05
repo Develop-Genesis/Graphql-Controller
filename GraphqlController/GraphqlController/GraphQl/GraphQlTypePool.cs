@@ -40,9 +40,14 @@ namespace GraphqlController.GraphQl
         public IGraphType GetMutationType(IEnumerable<Type> mutationTypes)
            => new DynamicMutationType(this, mutationTypes);
 
-        public GraphQlTypePool(IAssemblyResolver assemblyResolver)
+        public GraphQlTypePool(IAssemblyResolver assemblyResolver, ICustomScalarTypesResolver customScalarTypesResolver)
         {
             _assemblyResolver = assemblyResolver;
+
+            foreach(var keyValue in customScalarTypesResolver.GetCustomScalars())
+            {
+                ScalarTypeMap.Add(keyValue.Key, keyValue.Value);
+            }
         }
 
         public IGraphType GetGraphType(Type type)
