@@ -30,15 +30,28 @@ namespace GraphqlController.GraphQl
             if (!typeof(IUnionGraphType).IsAssignableFrom(type))
                 throw new InvalidOperationException("Invalid Union type");
 
-            if( IsUnionType(type) )
+            string name = "";            
+
+            {
+                var genericArguments = type.GetGenericArguments();
+
+                foreach (var genericArgument in genericArguments)
+                {
+                    var gType = pool.GetGraphType(genericArgument) as IObjectGraphType;
+                    name += gType.Name;
+                    AddPossibleType(gType);
+                }
+            }
+
+            if (IsUnionType(type))
             {
                 // Generate name
                 var genericArguments = type.GetGenericArguments();
-                Name = string.Join('_', genericArguments.Select(x => x.Name)); 
-            } 
+                Name = name + "Union";
+            }
             else
             {
-                if( !IsUnionType(type.BaseType) )
+                if (!IsUnionType(type.BaseType))
                     throw new InvalidOperationException("Invalid Union type");
 
                 var nameAttr = type.GetAttribute<NameAttribute>();
@@ -46,18 +59,10 @@ namespace GraphqlController.GraphQl
 
                 Name = nameAttr?.Name ?? type.Name;
                 Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
-                
+
                 type = type.BaseType;
             }
 
-            {
-                var genericArguments = type.GetGenericArguments();
-
-                foreach (var genericArgument in genericArguments)
-                {
-                    AddPossibleType(pool.GetGraphType(genericArgument) as IObjectGraphType);
-                }
-            }
         }
 
         private static bool IsUnionType(Type type)
