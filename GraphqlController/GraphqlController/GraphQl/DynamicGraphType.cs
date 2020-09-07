@@ -91,12 +91,13 @@ namespace GraphqlController.GraphQl
             }
 
             // work with the methods
-            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+            var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                              .Where(x => x.DeclaringType != typeof(object))
                               .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 
             // for each method public
             foreach (var method in methods)
-            {
+            {                
                 if (method.Name == nameof(GraphNodeType<object>.OnCreateAsync) ||
                    method.IsSpecialName)
                 {

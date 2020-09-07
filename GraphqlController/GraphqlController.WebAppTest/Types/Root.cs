@@ -13,7 +13,7 @@ namespace GraphqlController.WebAppTest.Types
     /// The root type
     /// </summary>
     [RootType]
-    public class Root : GraphNodeType
+    public class Root : BaseTest
     {
 
         /// <summary>
@@ -33,6 +33,12 @@ namespace GraphqlController.WebAppTest.Types
         }
 
 
+    }
+
+    public class BaseTest : GraphNodeType
+    {
+        public string TestProperty => "Test";
+        public string TestMethod(int a) => "Test";
     }
 
 }
