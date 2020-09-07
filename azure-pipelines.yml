@@ -44,7 +44,7 @@ jobs:
     # when is not from a pull request
     condition: ne(variables['Build.Reason'], 'PullRequest')   
     steps:
-      - template:  build-pipeline.yml      
+      - template:  build-pipeline.yml
       
       # collect code coverage
       - script: dotnet test $(solutionDirectory)/GraphqlController.UnitTest/GraphqlController.UnitTest.csproj --configuration $(buildConfiguration) --logger trx --collect "Code coverage"
@@ -56,10 +56,10 @@ jobs:
         displayName: 'Collect code coverage'
 
       # create nuget packages
-      - script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) -p:Version=2.5 -o . --no-build
+      - script: dotnet pack $(GraphControllerProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
         displayName: 'Create Nuget for GraphqlController'
 
-      - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -p:Version=2.5 -o . --no-build
+      - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
         displayName: 'Create Nuget for GraphqlController.AspNetCore'
 
       - task: Bash@3
