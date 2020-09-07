@@ -32,6 +32,11 @@ namespace GraphqlController.WebAppTest.Types
             return list.Skip(skip).Take(take);
         }
 
+        public static string GenerateName(Type type)
+        {
+            return "ElRoot";
+        }
+
 
     }
 

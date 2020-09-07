@@ -22,13 +22,17 @@ namespace GraphqlController.GraphQl
                 throw new ArgumentException("Invalid object type");
             }
 
+            // check if have the generate name and description functions
+            var nameFunction = type.GetMethod("GenerateName", BindingFlags.Static | BindingFlags.Public, null, new Type[]{ typeof(Type) }, null);
+            var descriptionFunction = type.GetMethod("GenerateDescription", BindingFlags.Static | BindingFlags.Public, null, new Type[] { typeof(Type) }, null);
+
             // get the name
             var nameAttr = type.GetAttribute<NameAttribute>();
             var descAttr = type.GetAttribute<DescriptionAttribute>();
 
             // set type name and description
-            Name = nameAttr?.Name ?? type.Name;
-            Description = descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary;
+            Name = nameFunction?.Invoke(null, new object[] { type }) as string ?? (nameAttr?.Name ?? type.Name);
+            Description = descriptionFunction?.Invoke(null, new object[] { type }) as string ?? (descAttr?.Description ?? DocXmlHelper.DocReader.GetTypeComments(type).Summary);
 
             // set the type metadata
             Metadata["type"] = type;
@@ -92,6 +96,8 @@ namespace GraphqlController.GraphQl
 
             // work with the methods
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                              .Where(x => !(x.DeclaringType.IsGenericType && x.DeclaringType.GetGenericTypeDefinition() == typeof(GraphNodeType<>)))
+                              .Where(x => x.DeclaringType != typeof(GraphNodeType))
                               .Where(x => x.DeclaringType != typeof(object))
                               .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 

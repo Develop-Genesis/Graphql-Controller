@@ -72,6 +72,8 @@ namespace GraphqlController.GraphQl
 
                 // work with the methods
                 var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+                                  .Where(x => !(x.DeclaringType.IsGenericType && x.DeclaringType.GetGenericTypeDefinition() == typeof(GraphNodeType<>)))
+                                  .Where(x => x.DeclaringType != typeof(GraphNodeType))
                                   .Where(x => x.DeclaringType != typeof(object))
                                   .Where(x => x.GetAttribute<IgnoreAttribute>() == null);
 
