@@ -60,7 +60,7 @@ jobs:
         displayName: 'Create Nuget for GraphqlController'
 
       - script: dotnet pack $(GraphControllerAspNetCoreProjectDirectory) -c $(buildConfiguration) -p:Version=$(GitVersion.NugetVersion) -o . --no-build
-        displayName: 'Create Nuget for GraphqlController.AspNetCore'
+        displayName: 'Create Nuget for GraphqlController.AspNetCore' 
 
       - task: Bash@3
         inputs:
