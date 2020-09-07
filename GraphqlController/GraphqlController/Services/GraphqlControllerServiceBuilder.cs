@@ -39,7 +39,7 @@ namespace GraphqlController.Services
         public void AddAssembly(Assembly assembly)
         {
             // Add the assembly to the resolver
-            _assemblyResolver.AddAssembly(assembly);
+            AssemblyResolver.AddAssembly(assembly);
 
             // Add all type nodes to the container as transient
             var nodeTypes = assembly.GetTypes().Where(x => typeof(IGraphNodeType).IsAssignableFrom(x));
