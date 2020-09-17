@@ -44,7 +44,7 @@ namespace GraphqlController.AspNetCore
 
             if (HttpContext.Response.StatusCode != 200)
             {
-                return StatusCode(HttpContext.Response.StatusCode);
+                return StatusCode(HttpContext.Response.StatusCode, result.result);
             }
 
             return new ActionResult<Dictionary<string, object>>(result.result);
