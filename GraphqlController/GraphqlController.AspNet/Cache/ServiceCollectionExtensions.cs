@@ -23,6 +23,8 @@ namespace GraphqlController.AspNetCore.Cache
 
             services.AddSingleton(cacheConfig);
 
+            services.AddHttpContextAccessor();
+
             services.AddScoped<IGraphqlInAppCacheService, GraphqlInAppCacheService>();
             services.AddScoped<ICachePolicy, DefaultCachePolicy>();
             services.AddScoped<GraphQlExecutionMiddleware>();

@@ -1,4 +1,5 @@
 ﻿using GraphQL.Types;
+using GraphqlController.AspNetCore.Authorization;
 using GraphqlController.AspNetCore.Services;
 using GraphqlController.Execution;
 using GraphqlController.Services;
@@ -30,7 +31,12 @@ namespace GraphqlController.AspNetCore
         public static IGraphQLExecutionBuilder UseGraphQlExecutionFor(this IApplicationBuilder app, Type root)
         {
             var executionBuilderResolver = (IExecutionBuilderResolver)app.ApplicationServices.GetService(typeof(IExecutionBuilderResolver));
-            return executionBuilderResolver.GetGraphqlExecutionBuilder(root);
+            var builder = executionBuilderResolver.GetGraphqlExecutionBuilder(root);
+            
+            // add authorization as a built in feature
+            builder.Use<AuthorizationExecutionMiddleware>();
+
+            return builder;
         }
 
         public static IGraphQLExecutionBuilder UseGraphQlExecutionFor<T>(this IApplicationBuilder app)
