@@ -982,9 +982,6 @@ In your Startup.cs in Configure add:
 ```
 
 
-#### Progress
-This library is still in development and has not be tested in production
-
 ##### Comming features
 * Support for the graphql net server project
 * Posibly more features to add and bugs to fix
