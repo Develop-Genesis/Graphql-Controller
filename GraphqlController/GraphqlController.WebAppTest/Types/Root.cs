@@ -38,8 +38,6 @@ namespace GraphqlController.WebAppTest.Types
         {
             return "ElRoot";
         }
-
-
     }
 
     public class BaseTest : GraphNodeType
