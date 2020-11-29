@@ -1,7 +1,7 @@
 ﻿using GraphqlController;
 using GraphqlController.Attributes;
 using GraphqlController.Helpers;
-using Gski.Relay.Types;
+using GraphqlController.AspNetCore.Relay.Types;
 using System;
 using System.Collections.Generic;
 using System.Text;

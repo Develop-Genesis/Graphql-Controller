@@ -1,6 +1,6 @@
 ﻿using GraphQL;
 using GraphqlController.Services;
-using Gski.Relay.Types;
+using GraphqlController.AspNetCore.Relay.Types;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
